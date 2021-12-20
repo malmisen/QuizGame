@@ -87,8 +87,10 @@ public class UserDAO {
         ResultSet result = null;
         User dbUser = new User();
         try{
+            System.out.println("Executing query");
             searchExistingUserByEmailStmt.setString(1, email);
             result = searchExistingUserByEmailStmt.executeQuery();
+            System.out.println("Query executed!");
             while(result.next()){
                 dbUser.setId(result.getInt(USER_COLUMN_ID_NAME));
                 dbUser.setFirstName(result.getString(USER_COLUMN_FIRSTNAME_NAME));
@@ -104,7 +106,6 @@ public class UserDAO {
         }
         return dbUser;
     }
-    
    
     /**
      * This method attempts to create a new user IF no user with the given username and or email already exists.
@@ -115,11 +116,11 @@ public class UserDAO {
     public String createNewUser(User user) {
         //check if User with this email already exists
         User existingUser = getUserByEmail(user.getEmail());
-        if(existingUser.getEmail().equals(user.getEmail())){
+        if(existingUser.getEmail() != null){
             return "This email already exists";
         }
         existingUser = getUserByUsername(user.getUsername());
-        if(existingUser.getUsername().equals(user.getUsername())){
+        if(existingUser.getUsername() != null){
             return "This username already exists";
         }
        
@@ -142,13 +143,12 @@ public class UserDAO {
             return "Successfully created new user!";
         }
         
-        return "Could not create new user";
-        
-    }
+        return "Could not create new user";   
+    }  
     
     private void prepareStatements() throws SQLException{
         searchExistingUserByUsernameStmt = db.getCon().prepareStatement("SELECT * FROM users WHERE username = ?");
         searchExistingUserByEmailStmt = db.getCon().prepareStatement("SELECT * FROM users WHERE email = ?");
-        createNewUserStmt = db.getCon().prepareStatement("INSERT INTO users (firstName,lastName,email,username,password) VALUES (?,?,?,?,md5(?)");
+        createNewUserStmt = db.getCon().prepareStatement("INSERT INTO users (firstName,lastName,email,username,password) VALUES (?,?,?,?,?)");
     }    
 }
