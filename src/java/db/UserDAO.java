@@ -106,7 +106,6 @@ public class UserDAO {
         }
         return dbUser;
     }
-    
    
     /**
      * This method attempts to create a new user IF no user with the given username and or email already exists.
@@ -144,9 +143,8 @@ public class UserDAO {
             return "Successfully created new user!";
         }
         
-        return "Could not create new user";
-        
-    }
+        return "Could not create new user";   
+    }  
     
     private void prepareStatements() throws SQLException{
         searchExistingUserByUsernameStmt = db.getCon().prepareStatement("SELECT * FROM users WHERE username = ?");
