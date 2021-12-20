@@ -37,10 +37,6 @@ public class RegisterController {
                          @RequestParam("password2") String password2,
                          ModelMap model) {
         
-        System.out.println("Firstname: " + firstName);
-        System.out.println("Lastname: " + lastName);
-        
-        
         if(firstName.length()==0 || lastName.length()==0 || email.length() == 0 || username.length() == 0 || password1.length() == 0 || password2.length()== 0){
             model.addAttribute("Incorrect", "Please fill in all the fields");
             return "register.html";

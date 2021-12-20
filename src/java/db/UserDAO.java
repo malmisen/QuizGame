@@ -87,10 +87,8 @@ public class UserDAO {
         ResultSet result = null;
         User dbUser = new User();
         try{
-            System.out.println("Executing query");
             searchExistingUserByEmailStmt.setString(1, email);
             result = searchExistingUserByEmailStmt.executeQuery();
-            System.out.println("Query executed!");
             while(result.next()){
                 dbUser.setId(result.getInt(USER_COLUMN_ID_NAME));
                 dbUser.setFirstName(result.getString(USER_COLUMN_FIRSTNAME_NAME));

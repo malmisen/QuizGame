@@ -38,7 +38,7 @@ public class ApiHandler {
      * @param difficulty the desired question difficulty
      * @return JSON as a string
      */
-    public String geQuestions(String category, String difficulty){
+    public String getQuestions(String category, String difficulty){
          String command = "curl https://quizapi.io/api/v1/questions -G -d apiKey="+TOKEN+" -d limit=10 -d category="+category+" -d difficulty="+difficulty;
         try {
             return callApi(command);
