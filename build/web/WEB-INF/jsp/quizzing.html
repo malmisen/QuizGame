@@ -12,6 +12,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <body>
         <form th:action="@{/result}" method="POST">
             
+             <div th:each="question: ${questions}">
+                <p th:text="${question.getQuestion()}"></p>
+                <div th:each="alternative: ${question.getAlternatives()}">
+                    <p th:text="${alternative}"></p>
+                </div>    
+            </div>
+            <!--
             <input type='hidden' name='quizId' th:value='${quizId}'/>
             <input type='hidden' name='userId' th:value='${userId}'/>
             
@@ -40,6 +47,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <label for="8" th:text='${question3.getOptions().split("/")[2]}'/>
             
             <input type='submit' value='submit'/>
+            -->
         </form> 
     </body>
 </html>

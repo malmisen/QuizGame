@@ -19,20 +19,23 @@ import org.springframework.web.bind.annotation.SessionAttributes; // same as set
 public class WelcomeController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String start() { //method name is not mapped
+    public String start(ModelMap model) { //method name is not mapped
         
         Parser parser = new Parser();
         Question[] questions = parser.getQuiz("linux", "easy");
+        model.addAttribute("questions", questions);
+        /*
         for(int i = 0; i < questions.length; i++){
             System.out.println("Question:\n" + questions[i].getQuestion());
             String[] alternatives = questions[i].getAlternatives();
-            System.out.println("Alternatives:");
-            for(int j = 0; j < alternatives.length; j++){
-                System.out.println(alternatives[j]);
-            }
-        }
-        
-        return "index";
+            
+            model.addAttribute("question"+i, questions[i].getQuestion());
+            model.addAttribute("alternatives"+i, alternatives);
+           
+        }*/
+    
+        return "quizzing.html";
+        //return "index";
     }
 
     @RequestMapping(value = "/quiz", method = RequestMethod.GET)
