@@ -26,6 +26,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         -->
         
         <form method="POST" action="/QuizGame/registerMe">
+            <div>
+                <span th:text="${Incorrect}"></span>
+            </div>
             <div class="row g-3 align-items-center">
               <label for="exampleInputEmail1" class="form-label">First Name</label>
               <input type="text" class="form-control" name="firstName"/>
@@ -53,5 +56,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </div>
             <button type="submit" value="Register" class="btn btn-primary">Submit</button>
         </form>
+        
+        
     </body>
 </html>

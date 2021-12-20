@@ -16,6 +16,7 @@
  * Created: 20 Dec 2021
  */
 CREATE SCHEMA test;
+
 USE test;
 
 DROP TABLE results;
