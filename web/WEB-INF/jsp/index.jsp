@@ -17,7 +17,7 @@
         <h2>Please login or register</h2>
         </tr>
         <tr>
-        <form method="GET" action="/L3ST/quiz">
+        <form method="GET" action="/QuizGame/quiz">
             Username <input type="text" name="username"><br>
             Password <input type="text" name="password"><br>
             <input type="hidden" name="action" value="login">

@@ -147,8 +147,8 @@ public class UserDAO {
     }
     
     private void prepareStatements() throws SQLException{
-        searchExistingUserByUsernameStmt = db.getCon().prepareStatement("SELECT * FROM users WHERE username = '?';");
-        searchExistingUserByEmailStmt = db.getCon().prepareStatement("SELECT * FROM users WHERE email = '?';");
+        searchExistingUserByUsernameStmt = db.getCon().prepareStatement("SELECT * FROM users WHERE username = ?");
+        searchExistingUserByEmailStmt = db.getCon().prepareStatement("SELECT * FROM users WHERE email = ?");
         createNewUserStmt = db.getCon().prepareStatement("INSERT INTO users (firstName,lastName,email,username,password) VALUES (?,?,?,?,md5(?)");
     }    
 }
