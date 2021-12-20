@@ -2,6 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Other/SQLTemplate.sql to edit this template
  */
+
+
+
+
 /**
  * The sql is run in MySQLWorkbench 
  * this is just a file used to save the sql code for safe keeping
@@ -11,10 +15,6 @@
  * Author:  Sébastien Malmberg
  * Created: 20 Dec 2021
  */
-
-
-
-
 CREATE SCHEMA test;
 USE test;
 
