@@ -65,7 +65,7 @@ public class Question {
         for(int i = 0; i < keys.length; i++){
             Alternative alt = alternatives.get(String.valueOf(keys[i]));
             
-            if(alt.getAlternative() != null || !(alt.getAlternative().equals("null"))){
+            if(!(alt.getAlternative().equals("null"))){
                 alts.add(alt);
             }
         }
