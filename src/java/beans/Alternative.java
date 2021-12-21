@@ -13,8 +13,17 @@ import java.io.Serializable;
 public class Alternative implements Serializable{
     private int id;
     private String alternative;
+    private int isCorrect;
     
     public Alternative(){};
+    
+    public void setIsCorrect(int correct){
+        isCorrect = correct;
+    }
+    
+    public int getIsCorrect(){
+        return isCorrect;
+    }
     
     public void setAlternative(String str){
         alternative = str;

@@ -4,6 +4,7 @@
  */
 package beans;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -37,19 +38,38 @@ public class Question {
     
     public void setCorrectAnswer(HashMap<String,String> correct){
         this.correct = correct;
+        
+        Set<String> setKeys = alternatives.keySet();
+        Object[] keys = setKeys.toArray();
+        
+        for(int i = 0; i < keys.length; i++){
+            Alternative alt = alternatives.get(String.valueOf(keys[i]));
+            if(correct.get(String.valueOf(keys[i])).equals("true")){
+                alt.setIsCorrect(1);
+            } else {
+                alt.setIsCorrect(0);
+            }
+            
+            alternatives.put(String.valueOf(keys[i]), alt);
+        }
     }
     
     public String getQuestion(){
         return question;
     }
     
-    public Alternative[] getAlternatives(){
-        Object[] alts = alternatives.values().toArray();
-        Alternative[] strAlts = new Alternative[alts.length];
-        for(int i = 0; i < alts.length; i++){
-            strAlts[i] = (Alternative)alts[i];
+    public ArrayList<Alternative> getAlternatives(){
+        Set<String> setKeys = alternatives.keySet();
+        Object[] keys = setKeys.toArray();
+        ArrayList<Alternative> alts = new ArrayList<>();
+        for(int i = 0; i < keys.length; i++){
+            Alternative alt = alternatives.get(String.valueOf(keys[i]));
+            
+            if(alt.getAlternative() != null || !(alt.getAlternative().equals("null"))){
+                alts.add(alt);
+            }
         }
-        return strAlts;
+        return alts;
     }
     
     /**
