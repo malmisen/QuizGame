@@ -6,6 +6,7 @@ package db;
 
 import beans.Alternative;
 import beans.Question;
+import beans.Quiz;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,6 +30,9 @@ public class QuizDAO {
     PreparedStatement createAlternativesStmt;
     PreparedStatement countRowsInQuizzesStmt;
     PreparedStatement selectQuestionsByQuizIdStmt;
+    PreparedStatement getQuizByIdStmt;
+    PreparedStatement getQuestionsByQuizIdStmt;
+    PreparedStatement getAlternativesByQuestionAndQuizIdStmt;
     
     //Db connection handler
     private DBHandler db;
@@ -95,6 +99,28 @@ public class QuizDAO {
         }
     }
     
+    public ArrayList<Question> getQuestionsByQuizId(int quizId){
+        ArrayList<Question> questions = new ArrayList<>();
+        ResultSet set = null;
+        
+        try{
+            getQuestionsByQuizIdStmt.setInt(1, quizId);
+            set = getQuestionsByQuizIdStmt.executeQuery();
+            while(set.next()){
+                Question q = new Question();
+                q.setQuestion(set.getString("text"));
+                q.setQuestionId(set.getInt("id"));
+                questions.add(q);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Could not fetch questions by quizId: " +quizId);
+            e.printStackTrace();
+        }
+        
+        return questions;
+    }
+    
     public ArrayList<Integer> createQuestions(ArrayList<Question> questions, int quizId){
         int updatedRows = 0;
         try{
@@ -142,11 +168,63 @@ public class QuizDAO {
         }
     }
     
+    public Quiz getQuiz(int quizId){
+        Quiz quiz = new Quiz();
+        ResultSet set = null;
+        
+        try{
+            getQuizByIdStmt.setInt(1, quizId);
+            set = getQuizByIdStmt.executeQuery();
+            while(set.next()){
+                quiz.setId(set.getInt("id"));
+                quiz.setCategory(set.getString("category"));
+                quiz.setDifficulty(set.getString("difficulty"));
+            }
+            
+        } catch (SQLException e){
+            System.out.println("Could not fetch quiz with id: " + quizId);
+            e.printStackTrace();
+        }
+        
+        return quiz;
+    }
+    
+    public ArrayList<Question> getAlternativesByQuestionId(ArrayList<Question> questions){
+        ResultSet set = null;
+        
+        try{
+            for(int i = 0; i < questions.size(); i++){
+                ArrayList<Alternative> alist = new ArrayList<>();
+                questions.get(i).setAlternativesList(alist);
+                getAlternativesByQuestionAndQuizIdStmt.setInt(1, questions.get(i).getQuestionId());
+                set = getAlternativesByQuestionAndQuizIdStmt.executeQuery();
+                while(set.next()){
+                    Alternative alt = new Alternative();
+                    alt.setAlternative(set.getString("text"));
+                    alt.setId(set.getInt("id"));
+                    alt.setIsCorrect(set.getInt("isCorrect"));
+                    questions.get(i).addAlternativeToList(alt);
+                }
+            }
+        } catch (SQLException e){
+            System.out.println("Could not fetch alternatives");
+            e.printStackTrace();
+        }
+        
+        return questions;
+        
+    }
+    
     private void prepareStatements() throws SQLException{
         createNewQuizStmt = db.getCon().prepareStatement("INSERT INTO quizzes (category, difficulty) VALUES (?,?)");
         createQuestionsStmt = db.getCon().prepareStatement("INSERT INTO questions (text, quiz_id) VALUES (?,?)");
         createAlternativesStmt = db.getCon().prepareStatement("INSERT INTO alternative (text, isCorrect, question_id, quiz_id) VALUES (?,?,?,?)");
         countRowsInQuizzesStmt = db.getCon().prepareStatement("SELECT COUNT(*) FROM quizzes");
         selectQuestionsByQuizIdStmt = db.getCon().prepareStatement("SELECT id FROM questions WHERE quiz_id = ?");
+        getQuizByIdStmt = db.getCon().prepareStatement("SELECT * FROM quizzes WHERE id = ?");
+        getQuestionsByQuizIdStmt = db.getCon().prepareStatement("SELECT id, text FROM questions WHERE quiz_id = ?");
+        getAlternativesByQuestionAndQuizIdStmt = db.getCon().prepareStatement("SELECT id, text, isCorrect FROM alternative WHERE question_id = ?");
     }
+
+    
 }

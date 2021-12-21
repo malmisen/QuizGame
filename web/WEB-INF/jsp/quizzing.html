@@ -12,10 +12,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <body>
         
         <form th:action="@{/result}" th:object="${quiz}" method="POST">
-             <input type='hidden' name='Quiz' th:value="${quiz.getQuestions()}" th:object='${quiz}'/>
+            <input type="hidden" name="QuizId" th:value="${quiz.getId()}"/>
              <div th:each="question: ${quiz.getQuestions()}">
                 <h2 th:text="${question.getQuestion()}"></h2>
-                <div th:each="alternative : ${question.getAlternatives()}">
+                <div th:each="alternative : ${question.getAlternativesList()}">
                     <input type="checkbox" th:name="${question.getQuestionId()}" th:value="${alternative.getAlternative()}"/>
                     <p th:text="${alternative.getAlternative()}"></p> 
                 </div> 

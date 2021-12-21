@@ -16,6 +16,7 @@ public class Question {
     private int questionId;
     private String question;
     private HashMap<String, Alternative> alternatives;
+    private ArrayList<Alternative> alternativesList;
     private HashMap<String,String> correct;
     
     public Question(){};    
@@ -31,7 +32,19 @@ public class Question {
     public void setQuestion(String question) {
         this.question = question;
     }
-
+    
+    public void setAlternativesList(ArrayList<Alternative> list){
+        alternativesList = list;
+    }
+    
+    public void addAlternativeToList(Alternative alt){
+        alternativesList.add(alt);
+    }
+    
+    public ArrayList<Alternative> getAlternativesList(){
+        return alternativesList;
+    }
+    
     public void setAlternatives(HashMap<String, Alternative> alt) {
         alternatives = alt; 
     }
@@ -57,6 +70,7 @@ public class Question {
     public String getQuestion(){
         return question;
     }
+    
     
     public ArrayList<Alternative> getAlternatives(){
         Set<String> setKeys = alternatives.keySet();

@@ -41,10 +41,16 @@ public class WelcomeController {
         
         dao.createAlternatives(questions, quizId);
         
+        //database now contains everything
+        Quiz quiz = dao.getQuiz(quizId);
         
+        ArrayList<Question> quests = dao.getQuestionsByQuizId(quizId);
+        quiz.setQuestions(quests);
         
-        Quiz quiz = new Quiz();
-        quiz.setQuestions(questions);
+        quests = dao.getAlternativesByQuestionId(quests);
+        
+        quiz.setQuestions(quests);
+        quiz.setId(quizId);
         
         model.addAttribute("quiz", quiz);
         

@@ -5,9 +5,11 @@
 package controller;
 
 import api.ApiHandler;
+import beans.Alternative;
 import beans.Question;
 import beans.Quiz;
 import beans.User;
+import db.QuizDAO;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -52,16 +54,50 @@ public class GameController {
      * Provides client with the results of the quiz
      * 
      * @param req
-     * @param quiz
-     * @param questions
+     * @param quizId
      * @param model
      * @return 
      */
     @RequestMapping(value = "/result", method = RequestMethod.POST)
-    public String getResults(HttpServletRequest req, @RequestParam("Quiz") String questions, ModelMap model) {
+    public String getResults(HttpServletRequest req, @RequestParam("QuizId") int quizId, ModelMap model) {
         Map<String, String[]> parameters = req.getParameterMap();
         // parameters.remove("Quiz");
-        System.out.println(questions);
+        
+        QuizDAO dao = new QuizDAO();
+        Quiz quiz = dao.getQuiz(quizId);
+        
+        ArrayList<Question> questions = dao.getQuestionsByQuizId(quizId);
+        quiz.setQuestions(questions);
+        
+        questions = dao.getAlternativesByQuestionId(questions);
+        
+        quiz.setQuestions(questions);
+        int score = 0;
+        for(int i = 0; i < questions.size(); i++){
+            ArrayList<Alternative> alt = questions.get(i).getAlternativesList();
+            String[] clientAnswers = parameters.get(String.valueOf(questions.get(i).getQuestionId()));
+            int totalCorrect = 0;
+            for(int j = 0; j < alt.size(); j++){
+                if(alt.get(j).getIsCorrect() == 1){
+                    totalCorrect++;
+                }
+            }
+            
+            for(int j = 0; j < alt.size(); j++){
+                for(int k = 0; k < clientAnswers.length; k++){
+                    if(alt.get(j).getAlternative().equals(clientAnswers[k])){
+                        if(alt.get(j).getIsCorrect() == 1){
+                            totalCorrect--;
+                        }
+                    }
+                }
+                
+            }
+            if(totalCorrect == 0) score++;
+        }
+        
+        System.out.println("Score: " + score);
+        
         /*
         for(int i  = 0; i < questions.size(); i++){
             System.out.println(questions.get(i).getQuestion());
@@ -73,8 +109,7 @@ public class GameController {
             String[] values = parameters.get(String.valueOf(i));
             score += questions.get(i).calculatePoints(values);
         }
-        System.out.println("Score: " + score);
-        
+        System.out.println("Score: " + score);       
         */
         return "quizzing.html";
     }
