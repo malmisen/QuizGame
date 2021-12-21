@@ -4,12 +4,10 @@
  */
 package api;
 
+import beans.Alternative;
 import beans.Question;
-import org.json.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -24,17 +22,16 @@ public class Parser {
     
     public Parser(){}
     
-    
-    
-    public Question[] getQuiz(String category, String difficulty){
-        ApiHandler api = new ApiHandler();
-        String json = api.getQuestions("linux", "easy");
-        Question[] questions = getQuestions(json);
-        return questions;
-    }
-  
-    private static Question[] getQuestions(String data){
+    /**
+     * 
+     * Returns an array list of questions
+     * 
+     * @param data the JSON to be parsed
+     * @return 
+     */
+    public ArrayList<Question> parseJSON(String data){
         Object obj = null;
+        System.out.println(data.replace(",", "\n"));
         try {
             obj = new JSONParser().parse(data);
         } catch (ParseException ex) {
@@ -42,6 +39,7 @@ public class Parser {
             ex.printStackTrace();
         }
         Question[] questions = new Question[10];
+        ArrayList<Question> quests = new ArrayList<>();
         JSONArray json = (JSONArray) obj;
         for(int i = 0; i < json.size(); i++){
             Object o = json.get(i);
@@ -49,14 +47,18 @@ public class Parser {
             
             Question question = new Question();
             question.setQuestion(jsonObject.get("question").toString());
+            question.setQuestionId(i);
             
             Object oAlternatives = jsonObject.get("answers");
             JSONObject jsonAlternatives = (JSONObject) oAlternatives;
             String[] altTemp = jsonAlternatives.toString().replace("{", "").replace("}","").split(",\"");
-            HashMap<String, String> alternatives = new HashMap<>();
+            HashMap<String, Alternative> alternatives = new HashMap<>();
             for(int j = 0; j < altTemp.length; j++){
                 String[] alt = altTemp[j].split(":");
-                alternatives.put(alt[0].replace("\"",""), alt[1].replace("\"", ""));
+                Alternative alternative = new Alternative();
+                alternative.setId(j);
+                alternative.setAlternative(alt[1].replace("\"", ""));
+                alternatives.put(alt[0].replace("\"",""),alternative);
             }
             question.setAlternatives(alternatives);
 
@@ -69,11 +71,12 @@ public class Parser {
                 correct.put(alt[0].replace("\"", "").replace("_correct", ""), alt[1].replace("\"", ""));
             } 
             question.setCorrectAnswer(correct);
-            questions[i] = question;
+            //questions[i] = question;
+            quests.add(question);
             
         }
        
-        return questions;
+        return quests;
     }
     
     

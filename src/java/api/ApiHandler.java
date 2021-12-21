@@ -4,10 +4,13 @@
  */
 package api;
 
+import beans.Question;
+import beans.Quiz;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 
 /**
@@ -15,33 +18,37 @@ import java.nio.charset.StandardCharsets;
  * 
  * @author Sébastien Malmberg
  */
-public class ApiHandler {
-    
+public class ApiHandler {    
     //A private token used to authenticate to the API
     private static final String TOKEN = "lb4CnB2Zr7mNM9nUNsi4LYTBka9xTOG6wzYNDZyY";
    
-    private static int BUFFER_SIZE = 1024;
-    
+    private static int BUFFER_SIZE = 1024;    
     /**
      * A default constructor
      */
     public ApiHandler(){};
 
     /**
-     * Returns JSON as a string. The JSON contains 10 questions on specified category.
      * Categories example: Linux, DevOps, Networking, Programming, Cloud, Docker
      * Difficulties: easy, medium, hard.
      * 
-     * Find examples here: https://quizapi.io/docs/1.0/overview#examples
+     * Returns a list of type Question. 
+     * The list will contain 10 questions. 
+     * Each question carries 6 alternatives (Some might be null). 
+     * See Object/Class Question in package beans.
+     * 
+     * Find examples here: https://quizapi.io/docs/1.0/overview#examples of the JSON object returned by the API
      * 
      * @param category the desired question category
      * @param difficulty the desired question difficulty
-     * @return JSON as a string
+     * @return Question[], 10 random questions fetched from the API 
      */
-    public String getQuestions(String category, String difficulty){
-         String command = "curl https://quizapi.io/api/v1/questions -G -d apiKey="+TOKEN+" -d limit=10 -d category="+category+" -d difficulty="+difficulty;
+    public ArrayList<Question> getQuestions(String category, String difficulty){
+        String command = "curl https://quizapi.io/api/v1/questions -G -d apiKey="+TOKEN+" -d limit=10 -d category="+category+" -d difficulty="+difficulty;
         try {
-            return callApi(command);
+            Parser parser = new Parser();
+            ArrayList<Question> questions = parser.parseJSON(callApi(command));
+            return questions;
         } catch (IOException ex) {
             System.out.println("Something went wrong when requesting EASY linux questions ");
             ex.printStackTrace();

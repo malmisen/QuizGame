@@ -1,8 +1,12 @@
 package controller;
 
+import api.ApiHandler;
 import api.Parser;
+import beans.Alternative;
 import beans.Question;
+import beans.Quiz;
 import db.UserDAO;
+import java.util.ArrayList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping; // for mapping request path to invoking method
@@ -21,19 +25,16 @@ public class WelcomeController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String start(ModelMap model) { //method name is not mapped
         
-        Parser parser = new Parser();
-        Question[] questions = parser.getQuiz("linux", "easy");
-        model.addAttribute("questions", questions);
-        /*
-        for(int i = 0; i < questions.length; i++){
-            System.out.println("Question:\n" + questions[i].getQuestion());
-            String[] alternatives = questions[i].getAlternatives();
-            
-            model.addAttribute("question"+i, questions[i].getQuestion());
-            model.addAttribute("alternatives"+i, alternatives);
-           
-        }*/
-    
+        ApiHandler api = new ApiHandler();
+        //Question[] questions = api.getQuestions("linux", "easy");
+        ArrayList<Question> questions = api.getQuestions("linux", "easy");
+        Quiz quiz = new Quiz();
+        quiz.setQuestions(questions);
+        
+        model.addAttribute("quiz", quiz);
+        
+       
+      
         return "quizzing.html";
         //return "index";
     }

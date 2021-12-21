@@ -4,26 +4,34 @@
  */
 package beans;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  *
- * @author regularclip
+ * @author Sébastien Malmberg
  */
 public class Question {
+    private int questionId;
     private String question;
-    private HashMap<String, String> alternatives;
+    private HashMap<String, Alternative> alternatives;
     private HashMap<String,String> correct;
     
     public Question(){};    
+    
+    public void setQuestionId(int id){
+        questionId = id;
+    }
+    
+    public int getQuestionId(){
+        return questionId;
+    }
     
     public void setQuestion(String question) {
         this.question = question;
     }
 
-    public void setAlternatives(HashMap<String, String> alt) {
+    public void setAlternatives(HashMap<String, Alternative> alt) {
         alternatives = alt; 
     }
     
@@ -35,13 +43,72 @@ public class Question {
         return question;
     }
     
-    public String[] getAlternatives(){
+    public Alternative[] getAlternatives(){
         Object[] alts = alternatives.values().toArray();
-        String[] strAlts = new String[alts.length];
+        Alternative[] strAlts = new Alternative[alts.length];
         for(int i = 0; i < alts.length; i++){
-            strAlts[i] = String.valueOf(alts[i]);
+            strAlts[i] = (Alternative)alts[i];
         }
         return strAlts;
+    }
+    
+    /**
+     * This method checks if the correct alternatives were given by the client for this question
+     * 
+     * @param answers the answers the client gave to this question
+     * @return 0 if 1 or more alternatives were incorrect, else return 1
+     */
+    public int calculatePoints(String[] answers){
+        Set<String> setKeys = alternatives.keySet();
+        Object[] keys = setKeys.toArray();
+        
+        int totalNumberOfCorrectAnswers = 0;
+        int j = 0;
+        for(int i = 0; i < keys.length; i++){
+            if(correct.get(String.valueOf(keys[i])).equals("true")){
+                totalNumberOfCorrectAnswers++;
+            }
+        }
+        
+        String[] correctAnswers = new String[totalNumberOfCorrectAnswers];
+        for(int i = 0; i < keys.length; i++){
+            if(correct.get(String.valueOf(keys[i])).equals("true")){
+                Alternative alt = alternatives.get(String.valueOf(keys[i]));
+                correctAnswers[j++] = alt.getAlternative();
+            }
+        }
+        
+        boolean success = compareLists(answers, correctAnswers);
+        if(success) return 1;
+        else        return 0;
+        
+    }
+    
+    /**
+     * Compare two lists, if they are equals the client answered this question correctly
+     * 
+     * 
+     * @param givenAnswers the answers given by the client
+     * @param correctAnswers the correct answers for this question
+     * @return true if all given answers are correct else false
+     */
+    private static boolean compareLists(String[] givenAnswers, String[] correctAnswers){
+        
+        int numberOfCorrectAnswers = correctAnswers.length;
+        int totalPoints = 0;
+        
+        //The answers in each list are not neccessarilly on the same positions
+        for(int i = 0; i < givenAnswers.length; i++){
+            String answer = givenAnswers[i];
+            for(int j = 0; j < correctAnswers.length; j++){
+                if(correctAnswers[j].equals(answer)){
+                    totalPoints++;
+                }
+            }
+        }
+        
+        return totalPoints == numberOfCorrectAnswers;
+
     }
     
     
