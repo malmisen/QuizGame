@@ -92,14 +92,9 @@ CREATE TABLE IF NOT EXISTS results(
 SELECT q.text FROM questions AS q WHERE q.quiz_id = 1;
 SELECT a.text FROM alternative AS a where a.quiz_id = 1 AND a.question_id = 1;
 
-
-CREATE TABLE IF NOT EXISTS correctAlternative(
-	id              INT AUTO_INCREMENT PRIMARY KEY,
-        quiz_id         INT NOT NULL,
-        question_id     INT NOT NULL,
-        alternative_id  INT NOT NULL,
-        correct         INT NOT NULL,
-        FOREIGN KEY (quiz_id) REFERENCES quizzes(id),
-        FOREIGN KEY (question_id) REFERENCES questions(id),
-        FOREIGN KEY (alternative_id) REFERENCES alternative(id)    
+CREATE TABLE IF NOT EXISTS leaderboard(
+	id              INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	totalScore	INT NOT NULL,
+        user_id         INT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id)
 );

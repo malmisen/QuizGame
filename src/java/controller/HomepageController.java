@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class HomepageController {
     
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String start(){
-        return "index";
-    }
+//    @RequestMapping(value = "/", method = RequestMethod.GET)
+//    public String start(){
+//        return "index";
+//    }
     
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String submit(

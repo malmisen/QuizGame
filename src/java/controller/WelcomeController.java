@@ -1,5 +1,6 @@
 package controller;
 
+import beans.UserResults;
 import db.UserDAO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -16,7 +17,33 @@ public class WelcomeController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String start(ModelMap model) { //method name is not mapped
-        return "index";
+        
+        /* MOVE BACK TO HOMEPAGECONTROLLER */
+        
+        beans.User user = new beans.User();
+        UserDAO dao = new UserDAO();
+        beans.LeaderboardResult result = new beans.LeaderboardResult();
+        
+        user.setUsername("stevie");                          //change back to username
+        beans.User dbUser = dao.getUserByUsername("stevie"); //change back to username
+        model.addAttribute("user", dbUser);
+        
+        String[] categories = {"Linux", "DevOps", "Docker", "Networking", "Programming"};
+        model.addAttribute("categories", categories);
+        
+        String[] difficulties = {"Easy", "Medium", "Hard"};
+        model.addAttribute("difficulties", difficulties);
+        
+        model.addAttribute("id", user.getId());
+        
+        UserResults results = dao.getUserResults(dbUser);
+        model.addAttribute("results", results.getResults());
+        
+//        LeaderboardResult result = 
+
+        /* MOVE BACK TO HOMEPAGECONTROLLER */
+
+        return "homepage.html"; // CHANGE BACK TO INDEX
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
