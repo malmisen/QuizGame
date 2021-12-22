@@ -9,7 +9,9 @@ import beans.Alternative;
 import beans.Question;
 import beans.Quiz;
 import beans.User;
+import beans.UserResult;
 import db.QuizDAO;
+import db.UserDAO;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -111,6 +113,13 @@ public class GameController {
         }
         
         System.out.println("Score: " + score);
+        
+        User user = new User();
+        user.setId(userId);
+        UserResult result = new UserResult();
+        result.setQuizId(quizId);
+        UserDAO userdao = new UserDAO();
+        result = userdao.updateUserResults(user, result);
         
         model.addAttribute("quiz", quiz);
         model.addAttribute("userId", 1);

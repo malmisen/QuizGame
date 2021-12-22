@@ -50,6 +50,7 @@ public class UserDAO {
     private PreparedStatement searchExistingUserByEmailStmt;
     private PreparedStatement updateUserTotalScoreStatement;
     private PreparedStatement getUserTotalScoreStatement;
+    private PreparedStatement getUserResultByUserAndQuizIdStmt;
 
     /**
      * Constructor.
@@ -163,23 +164,53 @@ public class UserDAO {
         return "Could not create new user";   
     }
     
-    public boolean updateUserResults(User user, UserResult result) {
+    
+    public UserResult getResultByUserAndQuizId(int userId, int quizId){
+        ResultSet set = null;
+        UserResult result = new UserResult();
+        try{
+            getUserResultByUserAndQuizIdStmt.setInt(1, quizId);
+            getUserResultByUserAndQuizIdStmt.setInt(2, userId);
+            set = getUserResultByUserAndQuizIdStmt.executeQuery();
+            while(set.next()){
+                result.setQuizId(set.getInt("id"));
+                result.setScore(set.getInt("score"));
+                result.setCategory(set.getString("category"));
+                result.setDifficulty(set.getString("difficulty"));
+            }
+        } catch (SQLException e){
+            System.out.println("Could not fetch results from result table with userId: " + userId + " and quizId: " + quizId);
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    /**
+     * 
+     * @param user the user who played
+     * @param result the result of the quiz
+     * @return UserResult, and updated result which also contains category and difficulty
+     */
+    public UserResult updateUserResults(User user, UserResult result) {
 
         System.out.println("INSIDE UPDATE FUNCTION: ");
         System.out.println("quizId: " + result.getQuizId());
         int updatedRows = 0;
         try {
-            updateUserQuizResultsStatement.setInt(1, user.getId());
-            updateUserQuizResultsStatement.setInt(2, result.getQuizId());
-            updateUserQuizResultsStatement.setInt(3, result.getScore());
+            updateUserQuizResultsStatement.setInt(1, result.getScore());
+            updateUserQuizResultsStatement.setInt(2, user.getId());
+            updateUserQuizResultsStatement.setInt(3, result.getQuizId());
             updatedRows = updateUserQuizResultsStatement.executeUpdate();
-            if (updatedRows == 1) {
-                return true;
+            if (updatedRows != 1) {
+                System.out.println("Could not update results table");
             }
         } catch (SQLException ex) {
-            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Something went wrong when updating the results table");
+            ex.printStackTrace();
         }
-        return false;
+        
+        UserResult res = getResultByUserAndQuizId(user.getId(), result.getQuizId());
+        return res;
     }
     
     public boolean updateUserTotalScore(User user, LeaderboardResult result) {
@@ -250,8 +281,9 @@ public class UserDAO {
         searchExistingUserByEmailStmt = db.getCon().prepareStatement("SELECT * FROM users WHERE email = ?");
         createNewUserStmt = db.getCon().prepareStatement("INSERT INTO users (firstName,lastName,email,username,password) VALUES (?,?,?,?,?)");
         getUserQuizResults = db.getCon().prepareStatement("SELECT q.subject, q.id,r.score FROM quizzes AS q INNER JOIN results AS r WHERE q.id = r.quiz_id AND r.user_id = ?");
-        updateUserQuizResultsStatement = db.getCon().prepareStatement("INSERT INTO results (user_id, quiz_id, score) VALUES (?,?,?)");
+        updateUserQuizResultsStatement = db.getCon().prepareStatement("INSERT INTO results (score, user_id, quiz_id) VALUES (?,?,?)");
         updateUserTotalScoreStatement = db.getCon().prepareStatement("INSERT INTO LeaderboardResult (user_id, total_score) VALUES (?,?)");
         getUserTotalScoreStatement = db.getCon().prepareStatement("TO DO");
+        getUserResultByUserAndQuizIdStmt = db.getCon().prepareStatement("SELECT q.category, q.difficulty, q.id,r.score, r.user_id FROM quizzes AS q INNER JOIN results AS r WHERE q.id = ? AND r.user_id = ?");
     }    
 }

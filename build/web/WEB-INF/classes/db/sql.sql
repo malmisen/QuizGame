@@ -81,12 +81,12 @@ INSERT INTO quizzes (category, difficulty) VALUES ("linux", "easy");
 SELECT * FROM quizzes;
 
 CREATE TABLE IF NOT EXISTS results(
-	id              INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        quizCategory    VARCHAR(32) NOT NULL,
-        quizDifficulty  VARCHAR(32) NOT NULL,
-        score           INT NOT NULL,
-        user_id         INT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(id)
+	id          INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	score       INT NOT NULL,
+        user_id     INT NOT NULL,
+        quiz_id     INT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (quiz_id) REFERENCES quizzes(id)
 );
 
 SELECT q.text FROM questions AS q WHERE q.quiz_id = 1;
