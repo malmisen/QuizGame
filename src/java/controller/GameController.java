@@ -36,9 +36,9 @@ public class GameController {
      * @return quizzing page
      */
     @RequestMapping(value = "/playQuiz", method = RequestMethod.GET)
-    public String getQuizzingPage(@RequestParam("Category") String category, 
-                                  @RequestParam("Difficulty") String difficulty,
-                                  @RequestParam("User") int userId,
+    public String getQuizzingPage(@RequestParam("category") String category, 
+                                  @RequestParam("difficulty") String difficulty,
+                                  @RequestParam("userId") int userId,
                                   ModelMap model) {
         
          ApiHandler api = new ApiHandler();

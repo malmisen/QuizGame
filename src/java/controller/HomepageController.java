@@ -34,10 +34,10 @@ public class HomepageController {
         beans.User dbUser = dao.getUserByUsername("stevie"); //change back to username
         model.addAttribute("user", dbUser);
         
-        String[] categories = {"Linux", "DevOps", "Docker", "Networking", "Programming"};
+        String[] categories = {"linux", "devOps", "docker", "networking", "programming"};
         model.addAttribute("categories", categories);
         
-        String[] difficulties = {"Easy", "Medium", "Hard"};
+        String[] difficulties = {"easy", "medium", "hard"};
         model.addAttribute("difficulties", difficulties);
         
         model.addAttribute("id", user.getId());

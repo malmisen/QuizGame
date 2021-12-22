@@ -9,32 +9,25 @@
         <h4>Choose which quiz you would like to play.</h4>
         <div>
             
-          <table style="float: left">
-            <tr>
-              <th>Categories</th>
-            </tr>
-              <tr th:each="category : ${categories}">
-                  <td>
-                      <form method="GET">
-                          <input type='hidden' name='userId' th:value='${user.getId()}'/>
-                          <button th:text="${category}" type="submit" class="btn btn-primary" name="category" th:value="${category}"/>
-                      </form>
-                  </td>
-              </tr>
-          </table>
-          <table style="float: left">
-            <tr>
-              <th>Difficulty</th>
-            </tr>
-            <tr th:each="difficulty : ${difficulties}">
-              <td>
-                <form method="GET">
-                    <input type='hidden' name='userId' th:value='${user.getId()}'/>
-                    <button th:text="${difficulty}" type="submit" class="btn btn-primary" name="difficulty" th:value="${difficulty}"/>
-                </form>
-              </td>               
-            </tr>      
-          </table>
+            
+          <form th:action="@{/playQuiz}" method="GET">
+          <input type='hidden' name='userId' th:value='${user.getId()}'/>          
+                    <ul>
+                        <li th:each="category : ${categories}">
+                            <input type="checkbox" th:text="${category}" name="category" th:value="${category}"/>                            
+                        </li>
+                        <li th:each="difficulty : ${difficulties}">                            
+                            <input type="checkbox" th:text="${difficulty}" name="difficulty" th:value="${difficulty}"/>
+                        </li>
+                    </ul>
+                    
+                    <input type='submit' value='submit'/>
+          
+                    </form> 
+                  
+             
+          
+          
             
         </div>
         
