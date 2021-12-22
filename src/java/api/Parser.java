@@ -29,11 +29,13 @@ public class Parser {
     public Question[] getQuiz(String category, String difficulty){
         ApiHandler api = new ApiHandler();
         String json = api.getQuestions("linux", "easy");
+        System.out.println(json);
         Question[] questions = getQuestions(json);
         return questions;
     }
   
     private static Question[] getQuestions(String data){
+        System.out.println(data);
         Object obj = null;
         try {
             obj = new JSONParser().parse(data);

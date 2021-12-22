@@ -1,14 +1,57 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
 <html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>TODO supply a title</title>
+        <title>Another Quiz game</title>
         <meta charset="UTF-8"></meta>
     </head>
     <body>
-        <div>TODO write content</div>
+        <h2>Welcome <span th:text="${user.getUsername()}"></span></h2>
+        <h4>Choose which quiz you would like to play.</h4>
+        <div>
+            
+          <table style="float: left">
+            <tr>
+              <th>Categories</th>
+            </tr>
+              <tr th:each="category : ${categories}">
+                  <td>
+                      <form method="GET">
+                          <input type='hidden' name='userId' th:value='${user.getId()}'/>
+                          <button th:text="${category}" type="submit" class="btn btn-primary" name="category" th:value="${category}"/>
+                      </form>
+                  </td>
+              </tr>
+          </table>
+          <table style="float: left">
+            <tr>
+              <th>Difficulty</th>
+            </tr>
+            <tr th:each="difficulty : ${difficulties}">
+              <td>
+                <form method="GET">
+                    <input type='hidden' name='userId' th:value='${user.getId()}'/>
+                    <button th:text="${difficulty}" type="submit" class="btn btn-primary" name="difficulty" th:value="${difficulty}"/>
+                </form>
+              </td>               
+            </tr>      
+          </table>
+            
+        </div>
+        
+        <div>
+             <table>            
+             <thead>
+                 <tr><td>Previous results</td></tr>
+             </thead>
+             <tbody>
+                <tr th:each="result: ${results}">
+                   <td th:text="${result.getQuiz()}" />
+                   <td th:text="${result.getScore()}"/>
+                 </tr>
+             </tbody>
+             
+         </table>
+        </div>
+        
     </body>
 </html>

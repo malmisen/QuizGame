@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 public class User implements Serializable{
     
-    private int    UserId;
+    private int    userId;
     private String firstName;
     private String lastName;
     private String email;
@@ -31,15 +31,7 @@ public class User implements Serializable{
     }
 
     public void setId(int id) {
-        this.UserId = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
+        this.userId = id;
     }
 
     public void setEmail(String email) {
@@ -66,5 +58,15 @@ public class User implements Serializable{
         return lastName;
     }
     
-    
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public int getId() {
+        return userId;
+    }
 }

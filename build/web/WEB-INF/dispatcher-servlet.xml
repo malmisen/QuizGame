@@ -36,4 +36,6 @@
     </bean>
     <bean class="controller.RegisterController">
     </bean>
+    <bean class="controller.HomepageController">
+    </bean>
 </beans>

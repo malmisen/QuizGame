@@ -4,10 +4,16 @@
  */
 package db;
 
+import beans.Leaderboard;
+import beans.LeaderboardResult;
 import beans.User;
+import beans.UserResult;
+import beans.UserResults;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class User Data Access Object (UserDAO).
@@ -19,18 +25,31 @@ import java.sql.SQLException;
 public class UserDAO {
     
     //USER TABLE
-    private static final String USER_TABLE_NAME             = "users";              //TABLE NAME
-    private static final String USER_COLUMN_ID_NAME         = "id";                 //PRIMARY KEY
-    private static final String USER_COLUMN_USERNAME_NAME   = "username";
-    private static final String USER_COLUMN_PASSWORD_NAME   = "password";
-    private static final String USER_COLUMN_FIRSTNAME_NAME  = "firstName";
-    private static final String USER_COLUMN_LASTNAME_NAME   = "lastName";
-    private static final String USER_COLUMN_EMAIL_NAME      = "email";
+    private static final String USER_TABLE_NAME                 = "users";              //TABLE NAME
+    private static final String USER_COLUMN_ID_NAME             = "id";                 //PRIMARY KEY
+    private static final String USER_COLUMN_USERNAME_NAME       = "username";
+    private static final String USER_COLUMN_PASSWORD_NAME       = "password";
+    private static final String USER_COLUMN_FIRSTNAME_NAME      = "firstName";
+    private static final String USER_COLUMN_LASTNAME_NAME       = "lastName";
+    private static final String USER_COLUMN_EMAIL_NAME          = "email";
+    private static final String USER_COLUMN_SCORE_NAME          = "score";
+    
+    //QUIZZES TABLE
+    private static final String QUIZZES_COLUMN_SUBJECT_NAME     = "subject";
+    private static final String QUIZZES_COLUMN_ID_NAME          = "id";
+    
+    //RESULTS TABLE    
+    private static final String RESULTS_COLUMN_SCORE_NAME       = "score";
+    private static final String RESULTS_COLUMN_TOTAL_SCORE_NAME = "totalScore";
     
     private DBHandler db;
+    private PreparedStatement getUserQuizResults;
+    private PreparedStatement updateUserQuizResultsStatement;   
     private PreparedStatement createNewUserStmt;
     private PreparedStatement searchExistingUserByUsernameStmt;
     private PreparedStatement searchExistingUserByEmailStmt;
+    private PreparedStatement updateUserTotalScoreStatement;
+    private PreparedStatement getUserTotalScoreStatement;
 
     /**
      * Constructor.
@@ -142,11 +161,97 @@ public class UserDAO {
         }
         
         return "Could not create new user";   
-    }  
+    }
+    
+    public boolean updateUserResults(User user, UserResult result) {
+
+        System.out.println("INSIDE UPDATE FUNCTION: ");
+        System.out.println("quizId: " + result.getQuizId());
+        int updatedRows = 0;
+        try {
+            updateUserQuizResultsStatement.setInt(1, user.getId());
+            updateUserQuizResultsStatement.setInt(2, result.getQuizId());
+            updateUserQuizResultsStatement.setInt(3, result.getScore());
+            updatedRows = updateUserQuizResultsStatement.executeUpdate();
+            if (updatedRows == 1) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public boolean updateUserTotalScore(User user, LeaderboardResult result) {
+        int updatedRows = 0;
+        try {
+            updateUserTotalScoreStatement.setInt(1, user.getId());
+            updateUserTotalScoreStatement.setInt(2, result.getTotalScore());
+            updatedRows = updateUserQuizResultsStatement.executeUpdate();
+            if (updatedRows == 1) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+//    public LeaderboardResult getLeaderboardResult (LeaderboardResult result) {
+//        ResultSet resultSet = null;
+//        LeaderboardResult results = new LeaderboardResult();
+//        LeaderboardResult r = null;
+//        try {
+//            getUserTotalScoreStatement.setInt(1, result.getTotalScore());
+//            resultSet = getUserQuizResults.executeQuery();
+//            int count = 0;
+//            while (resultSet.next()) {
+//                result = new LeaderboardResult();
+//                result.setTotalScore(resultSet.getInt(RESULTS_COLUMN_TOTAL_SCORE_NAME));
+//                results.setTotalScore(result);
+//                count++;
+//            }
+//            
+//        }catch(SQLException e){
+//            System.out.println("Something went wrong when fetching leaderboard results");
+//        }
+//        
+//        return results;
+//        }
+    
+    
+    public UserResults getUserResults(User user) {
+        ResultSet resultSet = null;
+        UserResults results = new UserResults();
+        UserResult result = null;
+        try {
+            getUserQuizResults.setInt(1, user.getId());
+            resultSet = getUserQuizResults.executeQuery();
+            int count = 0;
+            while (resultSet.next()) {
+                result = new UserResult();
+                result.setCategory(resultSet.getString(QUIZZES_COLUMN_SUBJECT_NAME));
+                result.setScore(resultSet.getInt(RESULTS_COLUMN_SCORE_NAME));
+                result.setQuizId(resultSet.getInt(QUIZZES_COLUMN_ID_NAME));
+
+                results.addResults(result);
+                count++;
+            }
+            
+        }catch(SQLException e){
+            System.out.println("Something went wrong when fetching quiz results");
+        }
+        
+        return results;
+    }
     
     private void prepareStatements() throws SQLException{
         searchExistingUserByUsernameStmt = db.getCon().prepareStatement("SELECT * FROM users WHERE username = ?");
         searchExistingUserByEmailStmt = db.getCon().prepareStatement("SELECT * FROM users WHERE email = ?");
         createNewUserStmt = db.getCon().prepareStatement("INSERT INTO users (firstName,lastName,email,username,password) VALUES (?,?,?,?,?)");
+        getUserQuizResults = db.getCon().prepareStatement("SELECT q.subject, q.id,r.score FROM quizzes AS q INNER JOIN results AS r WHERE q.id = r.quiz_id AND r.user_id = ?");
+        updateUserQuizResultsStatement = db.getCon().prepareStatement("INSERT INTO results (user_id, quiz_id, score) VALUES (?,?,?)");
+        updateUserTotalScoreStatement = db.getCon().prepareStatement("INSERT INTO LeaderboardResult (user_id, total_score) VALUES (?,?)");
+        getUserTotalScoreStatement = db.getCon().prepareStatement("TO DO");
     }    
 }
