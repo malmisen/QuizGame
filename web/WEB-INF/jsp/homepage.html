@@ -60,5 +60,16 @@
          </table>
         </div>
         
+        
+        <div>
+            <h3>On Going quizzes</h3>
+            <ul>
+                <li th:each="quiz : ${onGoingQuizzes}">
+                    <button></button>
+                    <label>Category: <span th:text="${quiz.getCategory()}"></span>, Difficulty: <span th:text="${quiz.getDifficulty()}"></span></label>
+                </li>
+            </ul>
+        </div>
+        
     </body>
 </html>

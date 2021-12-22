@@ -161,7 +161,9 @@ public class GameController {
                 dao.storeAnswers(userId, questions.get(i).getQuestionId(), clientAnswers);
             }
         }
-
+        
+        dao.addOnGoingQuiz(userId, quizId);
+        
         /*  Need to be changed  */
         User user = new User();
         UserDAO userdao = new UserDAO();
@@ -179,7 +181,10 @@ public class GameController {
         
         UserResults results = userdao.getUserResults(dbUser);
         model.addAttribute("results", results.getResults());
+        /*  ----        ------ ----------------------------------------*/
         
+        ArrayList<Quiz> onGoingQuizzes = dao.getOnGoingQuizzes(userId);
+        model.addAttribute("onGoingQuizzes", onGoingQuizzes);
         
         return "homepage.html";
         

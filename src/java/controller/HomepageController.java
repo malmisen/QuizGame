@@ -1,8 +1,11 @@
 package controller;
 
 import beans.LeaderboardResult;
+import beans.Quiz;
 import beans.UserResults;
+import db.QuizDAO;
 import db.UserDAO;
+import java.util.ArrayList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +47,10 @@ public class HomepageController {
         
         UserResults results = dao.getUserResults(dbUser);
         model.addAttribute("results", results.getResults());
+        
+        QuizDAO quizDAO = new QuizDAO();
+        ArrayList<Quiz> onGoingQuizzes = quizDAO.getOnGoingQuizzes(dbUser.getId());
+        model.addAttribute("onGoingQuizzes", onGoingQuizzes);
         
 //        LeaderboardResult result = 
         

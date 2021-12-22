@@ -34,7 +34,8 @@ public class QuizDAO {
     PreparedStatement getQuestionsByQuizIdStmt;
     PreparedStatement getAlternativesByQuestionAndQuizIdStmt;
     PreparedStatement storeClientAnswers;
-    
+    PreparedStatement createNewOnGoingQuizStmt;
+    PreparedStatement selectOnGoingQuizzesByUserIdStmt;
     //Db connection handler
     private DBHandler db;
     
@@ -233,6 +234,41 @@ public class QuizDAO {
         System.out.println("Updated clientAnswers, #rows: " + updatedRows);
     }
     
+    public void addOnGoingQuiz(int userId, int quizId){
+        int updatedRows = 0;
+        try{
+            createNewOnGoingQuizStmt.setInt(1, userId);
+            createNewOnGoingQuizStmt.setInt(2, quizId);
+            updatedRows = createNewOnGoingQuizStmt.executeUpdate();
+        } catch (SQLException e){
+            System.out.println("Could not create new row in onGoingQuizzes");
+            e.printStackTrace();
+        }
+        
+        System.out.println("Updated onGoingQuizzes with : " + updatedRows + " rows");
+    }
+    
+    public ArrayList<Quiz> getOnGoingQuizzes(int userId){
+        ResultSet set = null;
+        ArrayList<Quiz> quizzes = new ArrayList<>();
+        try{
+            selectOnGoingQuizzesByUserIdStmt.setInt(1, userId);
+            set = selectOnGoingQuizzesByUserIdStmt.executeQuery();
+            while(set.next()){
+                Quiz quiz = new Quiz();
+                quiz.setId(set.getInt("quiz_id"));
+                quiz.setCategory(set.getString("category"));
+                quiz.setDifficulty(set.getString("difficulty"));
+                quizzes.add(quiz);
+            }
+            
+        } catch (SQLException e){
+            System.out.println("Could not fetch on going quizzes");
+            e.printStackTrace();
+        }
+        
+        return quizzes;
+    }
     
     private void prepareStatements() throws SQLException{
         createNewQuizStmt = db.getCon().prepareStatement("INSERT INTO quizzes (category, difficulty) VALUES (?,?)");
@@ -244,6 +280,8 @@ public class QuizDAO {
         getQuestionsByQuizIdStmt = db.getCon().prepareStatement("SELECT id, text FROM questions WHERE quiz_id = ?");
         getAlternativesByQuestionAndQuizIdStmt = db.getCon().prepareStatement("SELECT id, text, isCorrect FROM alternative WHERE question_id = ?");
         storeClientAnswers = db.getCon().prepareStatement("INSERT INTO clientAnswers (text, user_id, question_id) VALUES (?,?,?)");
+        createNewOnGoingQuizStmt = db.getCon().prepareStatement("INSERT INTO onGoingQuizzes (user_id, quiz_id) VALUES (?,?)");
+        selectOnGoingQuizzesByUserIdStmt = db.getCon().prepareStatement("SELECT o.quiz_id, q.category, q.difficulty FROM onGoingQuizzes AS o INNER JOIN quizzes AS q WHERE o.user_id = ?");
     }
 
     

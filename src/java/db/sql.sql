@@ -100,10 +100,18 @@ CREATE TABLE IF NOT EXISTS leaderboard(
 );
 
 CREATE TABLE IF NOT EXISTS clientAnswers(
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     text VARCHAR(255) NOT NULL,
     user_id INT NOT NULL,
     question_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (question_id) REFERENCES questions(id)
+);
+
+CREATE TABLE IF NOT EXISTS onGoingQuizzes(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        quiz_id INT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (quiz_id) REFERENCES quizzes(id)
 );
