@@ -123,7 +123,7 @@ public class GameController {
         
         model.addAttribute("quiz", quiz);
         model.addAttribute("userId", 1);
-        model.addAttribute("score", "score");
+        model.addAttribute("score", score);
         model.addAttribute("difficulty", difficulty);
         model.addAttribute("category", category);
         return "quizzing.html";
