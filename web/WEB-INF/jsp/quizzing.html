@@ -11,10 +11,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </head>
     <body>
         
-        
+        <h1>Category: <span th:text="${category}"></span> Difficulty: <span th:text="${difficulty}"></span> </h1>
+        <h2 th:if="score!=${score}">Your score: <span th:text="${score}"></span></h2>
         <form th:action="@{/result}" th:object="${quiz}" method="POST">
              <input type="hidden" name="QuizId" th:value="${quiz.getId()}"/>
              <input type="hidden" name="userId" th:value="${userId}"/>
+             <input type="hidden" name="difficulty" th:value="${difficulty}"/>
+             <input type="hidden" name="cateogry" th:value="${category}"/>
              <ul>
                  <li th:each="question: ${quiz.getQuestions()}">
                      <h2 th:text="${question.getQuestion()}"></h2>
@@ -28,37 +31,5 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
              </ul>
              <input type='submit' value='submit'/>
         </form>
-        <!--
-        <form th:action="@{/result}" th:object="${quiz}" method="POST">
-            <input type="hidden" name="QuizId" th:value="${quiz.getId()}"/>
-             <div th:each="question: ${quiz.getQuestions()}">
-                <h2 th:text="${question.getQuestion()}"></h2>
-                <div th:each="alternative : ${question.getAlternativesList()}">
-                    <input type="checkbox" th:name="${question.getQuestionId()}" th:value="${alternative.getAlternative()}"/>
-                    <p th:text="${alternative.getAlternative()}"></p> 
-                </div> 
-                <br></br>
-            </div>
-            <input type='submit' value='submit'/>
-        </form> 
-        -->
-        <!--
-        <form class="ui form" th:action="@{/result}" method="POST" th:object="${quiz}">
-            
-            <ul>
-                <li th:each="question: ${quiz.getQuestions()}">
-                    <h2 th:text="${question.getQuestion()}"></h2>
-                    <input type="hidden" th:field="${question}" th:value="${question.getQuestionId()}"/>
-                    <ul>
-                        <li th:each="alternative: ${question.getAlternatives()}">
-                             <input type="checkbox" th:name="${question.getQuestionId()}" th:value="${alternative.getAlternative()}"/>
-                             <label th:text="${alternative.getAlternative()}"></label>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            
-        </form>
-        -->
     </body>
 </html>

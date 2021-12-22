@@ -41,7 +41,7 @@ public class GameController {
                                   @RequestParam("User") int userId,
                                   ModelMap model) {
         
-         ApiHandler api = new ApiHandler();
+        ApiHandler api = new ApiHandler();
         //Question[] questions = api.getQuestions("linux", "easy");
         ArrayList<Question> questions = api.getQuestions(category, difficulty);
         QuizDAO dao = new QuizDAO();
@@ -69,7 +69,7 @@ public class GameController {
         
         model.addAttribute("quiz", quiz);
         model.addAttribute("userId", 1);
-        
+        model.addAttribute("score", "score");
         model.addAttribute("difficulty", difficulty);
         model.addAttribute("category", category);
         return "quizzing.html";
@@ -84,60 +84,39 @@ public class GameController {
      * @return 
      */
     @RequestMapping(value = "/result", method = RequestMethod.POST)
-    public String getResults(HttpServletRequest req, @RequestParam("QuizId") int quizId, ModelMap model) {
+    public String getResults(HttpServletRequest req, 
+                            @RequestParam("QuizId") int quizId, 
+                            @RequestParam("userId") int userId, 
+                            @RequestParam("difficulty") String difficulty,
+                            @RequestParam("category") String category,
+                            ModelMap model) {
+        //Contains client answers
         Map<String, String[]> parameters = req.getParameterMap();
-        // parameters.remove("Quiz");
         
+        
+        //Fetch questions and alternatives for the played guiz from DB to calculate points
         QuizDAO dao = new QuizDAO();
         Quiz quiz = dao.getQuiz(quizId);
-        
         ArrayList<Question> questions = dao.getQuestionsByQuizId(quizId);
         quiz.setQuestions(questions);
-        
         questions = dao.getAlternativesByQuestionId(questions);
-        
         quiz.setQuestions(questions);
-        int score = 0;
+
+        
+        //Calc client results
+        int score = 0; 
         for(int i = 0; i < questions.size(); i++){
-            ArrayList<Alternative> alt = questions.get(i).getAlternativesList();
             String[] clientAnswers = parameters.get(String.valueOf(questions.get(i).getQuestionId()));
-            int totalCorrect = 0;
-            for(int j = 0; j < alt.size(); j++){
-                if(alt.get(j).getIsCorrect() == 1){
-                    totalCorrect++;
-                }
-            }
-            
-            for(int j = 0; j < alt.size(); j++){
-                for(int k = 0; k < clientAnswers.length; k++){
-                    if(alt.get(j).getAlternative().equals(clientAnswers[k])){
-                        if(alt.get(j).getIsCorrect() == 1){
-                            totalCorrect--;
-                        }
-                    }
-                }
-                
-            }
-            if(totalCorrect == 0) score++;
+            score += questions.get(i).calculatePoints(clientAnswers);
         }
         
         System.out.println("Score: " + score);
         
-        
-        
-        /*
-        for(int i  = 0; i < questions.size(); i++){
-            System.out.println(questions.get(i).getQuestion());
-        }
-        int score = 0;
-        // A quiz always consists of 10 questions (thus this map will have keys from 0 - 9)
-        // Each key maps to 1 or more values. The values represent the answer the client chose.
-        for(int i = 0; i < parameters.size(); i++){
-            String[] values = parameters.get(String.valueOf(i));
-            score += questions.get(i).calculatePoints(values);
-        }
-        System.out.println("Score: " + score);       
-        */
+        model.addAttribute("quiz", quiz);
+        model.addAttribute("userId", 1);
+        model.addAttribute("score", "score");
+        model.addAttribute("difficulty", difficulty);
+        model.addAttribute("category", category);
         return "quizzing.html";
     }
     
