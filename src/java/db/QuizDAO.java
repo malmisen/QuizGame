@@ -33,6 +33,7 @@ public class QuizDAO {
     PreparedStatement getQuizByIdStmt;
     PreparedStatement getQuestionsByQuizIdStmt;
     PreparedStatement getAlternativesByQuestionAndQuizIdStmt;
+    PreparedStatement storeClientAnswers;
     
     //Db connection handler
     private DBHandler db;
@@ -215,6 +216,24 @@ public class QuizDAO {
         
     }
     
+    public void storeAnswers(int userId, int questionId, String[] answers){
+        int updatedRows = 0;
+        try{
+            for(int i = 0; i < answers.length; i++){
+                storeClientAnswers.setString(1, answers[i]);
+                storeClientAnswers.setInt(2, userId);
+                storeClientAnswers.setInt(3, questionId);
+                updatedRows += storeClientAnswers.executeUpdate();
+            }
+        } catch (SQLException e){
+            System.out.println("Could not store client answers");
+            e.printStackTrace();
+        }
+        
+        System.out.println("Updated clientAnswers, #rows: " + updatedRows);
+    }
+    
+    
     private void prepareStatements() throws SQLException{
         createNewQuizStmt = db.getCon().prepareStatement("INSERT INTO quizzes (category, difficulty) VALUES (?,?)");
         createQuestionsStmt = db.getCon().prepareStatement("INSERT INTO questions (text, quiz_id) VALUES (?,?)");
@@ -224,6 +243,7 @@ public class QuizDAO {
         getQuizByIdStmt = db.getCon().prepareStatement("SELECT * FROM quizzes WHERE id = ?");
         getQuestionsByQuizIdStmt = db.getCon().prepareStatement("SELECT id, text FROM questions WHERE quiz_id = ?");
         getAlternativesByQuestionAndQuizIdStmt = db.getCon().prepareStatement("SELECT id, text, isCorrect FROM alternative WHERE question_id = ?");
+        storeClientAnswers = db.getCon().prepareStatement("INSERT INTO clientAnswers (text, user_id, question_id) VALUES (?,?,?)");
     }
 
     
