@@ -109,7 +109,9 @@ public class GameController {
         int score = 0; 
         for(int i = 0; i < questions.size(); i++){
             String[] clientAnswers = parameters.get(String.valueOf(questions.get(i).getQuestionId()));
-            score += questions.get(i).calculatePoints(clientAnswers);
+            if(clientAnswers != null){ 
+                score += questions.get(i).calculatePoints(clientAnswers);
+            }
         }
         
         System.out.println("Score: " + score);
@@ -118,6 +120,7 @@ public class GameController {
         user.setId(userId);
         UserResult result = new UserResult();
         result.setQuizId(quizId);
+        result.setScore(score);
         UserDAO userdao = new UserDAO();
         result = userdao.updateUserResults(user, result);
         
