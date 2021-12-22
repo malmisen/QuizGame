@@ -11,6 +11,24 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </head>
     <body>
         
+        
+        <form th:action="@{/result}" th:object="${quiz}" method="POST">
+             <input type="hidden" name="QuizId" th:value="${quiz.getId()}"/>
+             <input type="hidden" name="userId" th:value="${userId}"/>
+             <ul>
+                 <li th:each="question: ${quiz.getQuestions()}">
+                     <h2 th:text="${question.getQuestion()}"></h2>
+                     <ul>
+                         <li th:each="alternative: ${question.getAlternativesList()}">
+                             <input type="checkbox" th:name="${question.getQuestionId()}" th:value="${alternative.getAlternative()}"/>
+                             <label th:text="${alternative.getAlternative()}"></label>
+                         </li>
+                     </ul>
+                 </li>
+             </ul>
+             <input type='submit' value='submit'/>
+        </form>
+        <!--
         <form th:action="@{/result}" th:object="${quiz}" method="POST">
             <input type="hidden" name="QuizId" th:value="${quiz.getId()}"/>
              <div th:each="question: ${quiz.getQuestions()}">
@@ -23,7 +41,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </div>
             <input type='submit' value='submit'/>
         </form> 
-        
+        -->
         <!--
         <form class="ui form" th:action="@{/result}" method="POST" th:object="${quiz}">
             

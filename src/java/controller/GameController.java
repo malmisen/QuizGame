@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class GameController {
     
+    
     /**
      * Provides client with the quiz to be played
      * @param category, the quiz category
@@ -41,12 +42,37 @@ public class GameController {
                                   @RequestParam("User") User user,
                                   ModelMap model) {
         
-        ApiHandler api = new ApiHandler();
-        //Question[] questions = api.getQuestions(category, difficulty);
-       // model.addAttribute("questions", questions);
+         ApiHandler api = new ApiHandler();
+        //Question[] questions = api.getQuestions("linux", "easy");
+        ArrayList<Question> questions = api.getQuestions("linux", "easy");
+        QuizDAO dao = new QuizDAO();
+        int quizId = dao.createNewQuiz("linux", "easy");
+        System.out.println("QUIZID RECEIVED: " + quizId);
+        ArrayList<Integer> questionIds = dao.createQuestions(questions, quizId);
+        System.out.println("Size of questionIds: " + questionIds.size());
+        //Update each question with their respective id received from the database
+        for(int i = 0; i < questionIds.size(); i++){
+            questions.get(i).setQuestionId(questionIds.get(i));
+        }
+        
+        dao.createAlternatives(questions, quizId);
+        
+        //database now contains everything
+        Quiz quiz = dao.getQuiz(quizId);
+        
+        ArrayList<Question> quests = dao.getQuestionsByQuizId(quizId);
+        quiz.setQuestions(quests);
+        
+        quests = dao.getAlternativesByQuestionId(quests);
+        
+        quiz.setQuestions(quests);
+        quiz.setId(quizId);
+        
+        model.addAttribute("quiz", quiz);
+        model.addAttribute("userId", 1);
+        
         model.addAttribute("difficulty", difficulty);
         model.addAttribute("category", category);
-        model.addAttribute("user", user);
         return "quizzing.html";
     }
     
@@ -97,6 +123,8 @@ public class GameController {
         }
         
         System.out.println("Score: " + score);
+        
+        
         
         /*
         for(int i  = 0; i < questions.size(); i++){

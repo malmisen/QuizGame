@@ -1,13 +1,6 @@
 package controller;
 
-import api.ApiHandler;
-import api.Parser;
-import beans.Alternative;
-import beans.Question;
-import beans.Quiz;
-import db.QuizDAO;
 import db.UserDAO;
-import java.util.ArrayList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping; // for mapping request path to invoking method
@@ -25,39 +18,7 @@ public class WelcomeController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String start(ModelMap model) { //method name is not mapped
-        
-        ApiHandler api = new ApiHandler();
-        //Question[] questions = api.getQuestions("linux", "easy");
-        ArrayList<Question> questions = api.getQuestions("linux", "easy");
-        QuizDAO dao = new QuizDAO();
-        int quizId = dao.createNewQuiz("linux", "easy");
-        System.out.println("QUIZID RECEIVED: " + quizId);
-        ArrayList<Integer> questionIds = dao.createQuestions(questions, quizId);
-        System.out.println("Size of questionIds: " + questionIds.size());
-        //Update each question with their respective id received from the database
-        for(int i = 0; i < questionIds.size(); i++){
-            questions.get(i).setQuestionId(questionIds.get(i));
-        }
-        
-        dao.createAlternatives(questions, quizId);
-        
-        //database now contains everything
-        Quiz quiz = dao.getQuiz(quizId);
-        
-        ArrayList<Question> quests = dao.getQuestionsByQuizId(quizId);
-        quiz.setQuestions(quests);
-        
-        quests = dao.getAlternativesByQuestionId(quests);
-        
-        quiz.setQuestions(quests);
-        quiz.setId(quizId);
-        
-        model.addAttribute("quiz", quiz);
-        
-       
-      
-        return "quizzing.html";
-        //return "index";
+        return "index";
     }
 
     @RequestMapping(value = "/quiz", method = RequestMethod.GET)

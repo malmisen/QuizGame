@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 public class User implements Serializable{
     
-    private int    UserId;
+    private int    userId;
     private String firstName;
     private String lastName;
     private String email;
@@ -31,7 +31,11 @@ public class User implements Serializable{
     }
 
     public void setId(int id) {
-        this.UserId = id;
+        this.userId = id;
+    }
+    
+    public int getId(){
+        return userId;
     }
 
     public String getUsername() {
