@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class GameController {
     
-    
     /**
      * Provides client with the quiz to be played
      * @param category, the quiz category
@@ -39,14 +38,14 @@ public class GameController {
     @RequestMapping(value = "/playQuiz", method = RequestMethod.GET)
     public String getQuizzingPage(@RequestParam("Category") String category, 
                                   @RequestParam("Difficulty") String difficulty,
-                                  @RequestParam("User") User user,
+                                  @RequestParam("User") int userId,
                                   ModelMap model) {
         
          ApiHandler api = new ApiHandler();
         //Question[] questions = api.getQuestions("linux", "easy");
-        ArrayList<Question> questions = api.getQuestions("linux", "easy");
+        ArrayList<Question> questions = api.getQuestions(category, difficulty);
         QuizDAO dao = new QuizDAO();
-        int quizId = dao.createNewQuiz("linux", "easy");
+        int quizId = dao.createNewQuiz(category, difficulty);
         System.out.println("QUIZID RECEIVED: " + quizId);
         ArrayList<Integer> questionIds = dao.createQuestions(questions, quizId);
         System.out.println("Size of questionIds: " + questionIds.size());
