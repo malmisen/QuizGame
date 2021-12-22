@@ -1,7 +1,5 @@
 package controller;
 
-import api.Parser;
-import beans.Question;
 import db.UserDAO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -18,19 +16,6 @@ public class WelcomeController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String start(ModelMap model) { //method name is not mapped
-        
-//        Parser parser = new Parser();
-//        Question[] questions = parser.getQuiz("linux", "easy");
-//        model.addAttribute("questions", questions);
-        /*
-        for(int i = 0; i < questions.length; i++){
-            System.out.println("Question:\n" + questions[i].getQuestion());
-            String[] alternatives = questions[i].getAlternatives();
-            
-            model.addAttribute("question"+i, questions[i].getQuestion());
-            model.addAttribute("alternatives"+i, alternatives);
-           
-        }*/           
         return "index";
     }
 

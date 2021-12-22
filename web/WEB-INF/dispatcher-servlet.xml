@@ -38,4 +38,6 @@
     </bean>
     <bean class="controller.HomepageController">
     </bean>
+    <bean class="controller.GameController">
+    </bean>
 </beans>

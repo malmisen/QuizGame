@@ -33,7 +33,7 @@ public class User implements Serializable{
     public void setId(int id) {
         this.userId = id;
     }
-
+  
     public void setEmail(String email) {
         this.email = email;
     }

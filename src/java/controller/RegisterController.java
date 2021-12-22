@@ -23,13 +23,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class RegisterController {
     @RequestMapping(value = "/regPage", method = RequestMethod.GET)
-    public String getRegister( ModelMap model) {
+    public String getRegisterPage( ModelMap model) {
         return "register.html";
     }
     
     
     @RequestMapping(value = "/registerMe", method = RequestMethod.POST)
-    public String submit(@RequestParam("firstName") String firstName, 
+    public String registerMe(@RequestParam("firstName") String firstName, 
                          @RequestParam("lastName")  String lastName,
                          @RequestParam("email")     String email,
                          @RequestParam("username")  String username,
