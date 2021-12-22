@@ -93,57 +93,37 @@ public class Question {
      * @return 0 if 1 or more alternatives were incorrect, else return 1
      */
     public int calculatePoints(String[] answers){
-        Set<String> setKeys = alternatives.keySet();
-        Object[] keys = setKeys.toArray();
+        //No answers given
+        if(answers.length == 0) return 0;
         
-        int totalNumberOfCorrectAnswers = 0;
-        int j = 0;
-        for(int i = 0; i < keys.length; i++){
-            if(correct.get(String.valueOf(keys[i])).equals("true")){
-                totalNumberOfCorrectAnswers++;
-            }
-        }
-        
-        String[] correctAnswers = new String[totalNumberOfCorrectAnswers];
-        for(int i = 0; i < keys.length; i++){
-            if(correct.get(String.valueOf(keys[i])).equals("true")){
-                Alternative alt = alternatives.get(String.valueOf(keys[i]));
-                correctAnswers[j++] = alt.getAlternative();
-            }
-        }
-        
-        boolean success = compareLists(answers, correctAnswers);
-        if(success) return 1;
-        else        return 0;
-        
-    }
-    
-    /**
-     * Compare two lists, if they are equals the client answered this question correctly
-     * 
-     * 
-     * @param givenAnswers the answers given by the client
-     * @param correctAnswers the correct answers for this question
-     * @return true if all given answers are correct else false
-     */
-    private static boolean compareLists(String[] givenAnswers, String[] correctAnswers){
-        
-        int numberOfCorrectAnswers = correctAnswers.length;
         int totalPoints = 0;
         
-        //The answers in each list are not neccessarilly on the same positions
-        for(int i = 0; i < givenAnswers.length; i++){
-            String answer = givenAnswers[i];
-            for(int j = 0; j < correctAnswers.length; j++){
-                if(correctAnswers[j].equals(answer)){
-                    totalPoints++;
+        //Find total possible points
+        for(int i = 0; i < alternativesList.size(); i++){
+            if(alternativesList.get(i).getIsCorrect() == 1){
+                totalPoints++;
+            }
+        }
+        
+        
+        for(int i = 0; i < alternativesList.size(); i++){
+            for(int j = 0; j < answers.length; j++){
+                if(alternativesList.get(i).getAlternative().equals(answers[j])){
+                    if(alternativesList.get(i).getIsCorrect() == 1){
+                        totalPoints--;
+                        if(totalPoints == 0){
+                            break;
+                        }
+                    }
                 }
             }
         }
         
-        return totalPoints == numberOfCorrectAnswers;
-
+        if(totalPoints > 0) return 0;
+        return 1;
     }
+    
+   
     
     
     

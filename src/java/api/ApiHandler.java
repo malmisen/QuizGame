@@ -63,7 +63,7 @@ public class ApiHandler {
      */
     private static String callApi(String command) throws IOException{
         ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
-        processBuilder.directory(new File("C:\\Users\\franc\\OneDrive\\Datateknik (180hp)\\ID1212 - Nätverksprogrammering\\files"));
+        processBuilder.directory(new File("/home"));
         Process process = processBuilder.start();    
         
         InputStream inputStream = process.getInputStream();
