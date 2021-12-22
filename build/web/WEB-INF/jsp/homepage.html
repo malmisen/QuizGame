@@ -23,8 +23,22 @@
                     
                     <input type='submit' value='submit'/>
           
-                    </form> 
+                    </form>
                   
+            
+            
+            <form th:action="@{/playQuiz}" method="GET">
+                <input type='hidden' name='userId' th:value='${user.getId()}'/> 
+                <ul>
+                <li th:each="category : ${categories}">
+                <input type="radio" th:text="${category}" name="category" th:value="${category}"/>
+                </li>
+                <li th:each="difficulty : ${difficulties}">
+                <input type="radio" th:text="${difficulty}" name="difficulty" th:value="${difficulty}"/>
+                </li>
+                </ul>
+                <input type='submit' value='submit'/>
+            </form>
              
           
           

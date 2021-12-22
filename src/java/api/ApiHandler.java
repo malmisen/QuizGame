@@ -61,9 +61,18 @@ public class ApiHandler {
      * @return the data received from the API as a string.
      * @throws IOException 
      */
-    private static String callApi(String command) throws IOException{
+    private static String callApi(String command) throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
-        processBuilder.directory(new File("/home"));
+        try {
+            if (new File("/home").exists()) {
+                processBuilder.directory(new File("/home"));
+            } else if (new File("C:\\Users\\franc\\OneDrive\\Datateknik (180hp)\\ID1212 - Nätverksprogrammering\\files").exists()) {
+                processBuilder.directory(new File("C:\\Users\\franc\\OneDrive\\Datateknik (180hp)\\ID1212 - Nätverksprogrammering\\files"));
+            }
+        } catch (Exception e) {
+            System.out.println("error in callApi file location");
+        }
+
         Process process = processBuilder.start();    
         
         InputStream inputStream = process.getInputStream();
