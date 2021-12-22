@@ -98,3 +98,12 @@ CREATE TABLE IF NOT EXISTS leaderboard(
         user_id         INT NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+CREATE TABLE IF NOT EXISTS clientAnswers(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    text VARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
+    question_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (question_id) REFERENCES questions(id)
+);
