@@ -88,6 +88,9 @@ public class GameController {
         quiz.setQuestions(quests);
         quiz.setId(quizId);
         
+        /* FETCH CURRENT ANSWERS GIVEN */
+        
+        
         
         model.addAttribute("quiz", quiz);
         model.addAttribute("difficulty", quiz.getDifficulty());
@@ -182,9 +185,9 @@ public class GameController {
             }
         }
         
-        dao.addOnGoingQuiz(userId, quizId);
+            dao.addOnGoingQuiz(userId, quizId);
         
-        /*  Need to be changed  */
+             /*  Need to be changed  */
         
             User user = new User();
             
@@ -205,6 +208,8 @@ public class GameController {
             QuizDAO quizDAO = new QuizDAO();
             ArrayList<Quiz> onGoingQuizzes = quizDAO.getOnGoingQuizzes(dbUser.getId());
             model.addAttribute("onGoingQuizzes", onGoingQuizzes);
+            
+            
         
         /*
         User user = new User();

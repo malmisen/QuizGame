@@ -234,6 +234,8 @@ public class QuizDAO {
         System.out.println("Updated clientAnswers, #rows: " + updatedRows);
     }
     
+    
+    
     public void addOnGoingQuiz(int userId, int quizId){
         int updatedRows = 0;
         try{
