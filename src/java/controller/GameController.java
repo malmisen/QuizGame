@@ -198,8 +198,10 @@ public class GameController {
                 dao.storeAnswers(userId, questions.get(i).getQuestionId(), clientAnswers);
             }
         }
-        
-            dao.addOnGoingQuiz(userId, quizId);
+            boolean exists = dao.getOnGoingQuiz(quizId);
+            if(!exists){
+                dao.addOnGoingQuiz(userId, quizId);
+            }
         
              /*  Need to be changed  */
         
