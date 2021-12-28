@@ -4,8 +4,12 @@
  */
 package controller;
 
+import beans.Quiz;
 import beans.User;
+import beans.UserResults;
+import db.QuizDAO;
 import db.UserDAO;
+import java.util.ArrayList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,7 +64,26 @@ public class RegisterController {
                     return "register.html";
                 }
 
-                model.addAttribute("User", newUser);
+                //model.addAttribute("User", newUser);
+          
+            
+            UserDAO userDAO = new UserDAO();
+            User dbUser = userDAO.getUserByUsername(username);
+            model.addAttribute("user", dbUser);
+            model.addAttribute("id", dbUser.getId());
+            
+            String[] categories = {"Linux", "DevOps", "Docker", "Networking", "Programming"};
+            model.addAttribute("categories", categories);
+        
+            String[] difficulties = {"Easy", "Medium", "Hard"};
+            model.addAttribute("difficulties", difficulties);
+            
+            UserResults results = userDAO.getUserResults(dbUser);
+            model.addAttribute("results", results.getResults());
+            
+            QuizDAO quizDAO = new QuizDAO();
+            ArrayList<Quiz> onGoingQuizzes = quizDAO.getOnGoingQuizzes(dbUser.getId());
+            model.addAttribute("onGoingQuizzes", onGoingQuizzes);
 
                 return "homepage.html";  
             }

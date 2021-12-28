@@ -22,7 +22,6 @@ public class Parser {
     
     public Parser(){}
     
-
     /**
      * 
      * Returns an array list of questions

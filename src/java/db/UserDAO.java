@@ -51,6 +51,7 @@ public class UserDAO {
     private PreparedStatement updateUserTotalScoreStatement;
     private PreparedStatement getUserTotalScoreStatement;
     private PreparedStatement getUserResultByUserAndQuizIdStmt;
+    private PreparedStatement getUserByIdStmt;
 
     /**
      * Constructor.
@@ -276,6 +277,28 @@ public class UserDAO {
         return results;
     }
     
+    
+    public User getUserById(int id){
+        User user = new User();
+        ResultSet set = null;
+        
+        try{
+            getUserByIdStmt.setInt(1, id);
+            set = getUserByIdStmt.executeQuery();
+            while(set.next()){
+                user.setId(set.getInt("id"));
+                user.setEmail(set.getString("email"));
+                user.setFirstName(set.getString("firstName"));
+                user.setLastName(set.getString("lastName"));
+                user.setPassword(set.getString("password"));
+            }
+        } catch (SQLException e){
+            System.out.println("Could not fetch user by id");
+            e.printStackTrace();
+        }
+        return user;
+    }
+    
     private void prepareStatements() throws SQLException{
         searchExistingUserByUsernameStmt = db.getCon().prepareStatement("SELECT * FROM users WHERE username = ?");
         searchExistingUserByEmailStmt = db.getCon().prepareStatement("SELECT * FROM users WHERE email = ?");
@@ -285,5 +308,8 @@ public class UserDAO {
         updateUserTotalScoreStatement = db.getCon().prepareStatement("INSERT INTO LeaderboardResult (user_id, total_score) VALUES (?,?)");
         getUserTotalScoreStatement = db.getCon().prepareStatement("TO DO");
         getUserResultByUserAndQuizIdStmt = db.getCon().prepareStatement("SELECT q.category, q.difficulty, q.id,r.score, r.user_id FROM quizzes AS q INNER JOIN results AS r WHERE q.id = ? AND r.user_id = ?");
+        getUserByIdStmt = db.getCon().prepareCall("SELECT * FROM users WHERE id = ?");
     }    
+
+   
 }

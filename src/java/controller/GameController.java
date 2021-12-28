@@ -71,7 +71,7 @@ public class GameController {
         quiz.setId(quizId);
         
         model.addAttribute("quiz", quiz);
-        model.addAttribute("userId", 1);
+        model.addAttribute("userId", userId);
         model.addAttribute("score", "score");
         model.addAttribute("difficulty", difficulty);
         model.addAttribute("category", category);
@@ -126,7 +126,7 @@ public class GameController {
         result = userdao.updateUserResults(user, result);
         
         model.addAttribute("quiz", quiz);
-        model.addAttribute("userId", 1);
+        model.addAttribute("userId", userId);
         model.addAttribute("score", score);
         model.addAttribute("difficulty", difficulty);
         model.addAttribute("category", category);
@@ -165,6 +165,28 @@ public class GameController {
         dao.addOnGoingQuiz(userId, quizId);
         
         /*  Need to be changed  */
+        
+            User user = new User();
+            
+            UserDAO userDAO = new UserDAO();
+            User dbUser = userDAO.getUserById(userId);
+            model.addAttribute("user", dbUser);
+            model.addAttribute("id", dbUser.getId());
+            
+            String[] categories = {"Linux", "DevOps", "Docker", "Networking", "Programming"};
+            model.addAttribute("categories", categories);
+        
+            String[] difficulties = {"Easy", "Medium", "Hard"};
+            model.addAttribute("difficulties", difficulties);
+            
+            UserResults results = userDAO.getUserResults(dbUser);
+            model.addAttribute("results", results.getResults());
+            
+            QuizDAO quizDAO = new QuizDAO();
+            ArrayList<Quiz> onGoingQuizzes = quizDAO.getOnGoingQuizzes(dbUser.getId());
+            model.addAttribute("onGoingQuizzes", onGoingQuizzes);
+        
+        /*
         User user = new User();
         UserDAO userdao = new UserDAO();
         user.setUsername("stevie");                          //change back to username
@@ -181,11 +203,11 @@ public class GameController {
         
         UserResults results = userdao.getUserResults(dbUser);
         model.addAttribute("results", results.getResults());
-        /*  ----        ------ ----------------------------------------*/
-        
-        ArrayList<Quiz> onGoingQuizzes = dao.getOnGoingQuizzes(userId);
+     
+       
+        ArrayList<Quiz> onGoingQuizzes = dao.getOnGoingQuizzes(user.getId());
         model.addAttribute("onGoingQuizzes", onGoingQuizzes);
-        
+        */
         return "homepage.html";
         
     }

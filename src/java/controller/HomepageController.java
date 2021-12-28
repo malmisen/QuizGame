@@ -24,6 +24,8 @@ public class HomepageController {
 //        return "index";
 //    }
     
+    /* THIS METHOD IS NEVER USED
+    
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String submit(
 //            @RequestParam("username") String username,
@@ -56,4 +58,5 @@ public class HomepageController {
         
     return "homepage.html";
     }
+*/
 }

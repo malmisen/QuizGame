@@ -11,7 +11,7 @@
             
             
           <form th:action="@{/playQuiz}" method="GET">
-          <input type='hidden' name='userId' th:value='${user.getId()}'/>          
+          <input type='hidden' name='userId' th:value='${id}'/>          
                     <ul>
                         <li th:each="category : ${categories}">
                             <input type="checkbox" th:text="${category}" name="category" th:value="${category}"/>                            
@@ -28,7 +28,7 @@
             
             
             <form th:action="@{/playQuiz}" method="GET">
-                <input type='hidden' name='userId' th:value='${user.getId()}'/> 
+                <input type='hidden' name='userId' th:value='${id}'/> 
                 <ul>
                 <li th:each="category : ${categories}">
                 <input type="radio" th:text="${category}" name="category" th:value="${category}"/>
