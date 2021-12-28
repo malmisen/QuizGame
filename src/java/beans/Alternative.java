@@ -14,9 +14,17 @@ public class Alternative implements Serializable{
     private int id;
     private String alternative;
     private int isCorrect;
+    private boolean checked;
     
     public Alternative(){};
     
+    public void setChecked(boolean val){
+        checked = val;
+    }
+    
+    public boolean getChecked(){
+        return checked;
+    }
     public void setIsCorrect(int correct){
         isCorrect = correct;
     }

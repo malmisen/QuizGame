@@ -90,7 +90,21 @@ public class GameController {
         
         /* FETCH CURRENT ANSWERS GIVEN */
         
-        
+        for(int i = 0; i < quests.size(); i++){
+             ArrayList<Alternative> alternatives = quests.get(i).getAlternativesList();
+             ArrayList<String> clientAnswers = quizDAO.getClientAnswers(userId, quests.get(i).getQuestionId());
+             if(clientAnswers.size() > 0){
+                for(int j = 0; j < alternatives.size(); j++){
+                    for(int k = 0; k < clientAnswers.size(); k++){
+                        if(clientAnswers.get(k).equals(alternatives.get(j).getAlternative())){
+                            alternatives.get(j).setChecked(true);
+                        }
+                    }
+                }
+             }
+        }
+       
+        quiz.setQuestions(quests);
         
         model.addAttribute("quiz", quiz);
         model.addAttribute("difficulty", quiz.getDifficulty());

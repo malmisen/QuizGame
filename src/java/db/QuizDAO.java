@@ -36,6 +36,7 @@ public class QuizDAO {
     PreparedStatement storeClientAnswers;
     PreparedStatement createNewOnGoingQuizStmt;
     PreparedStatement selectOnGoingQuizzesByUserIdStmt;
+    PreparedStatement fetchClientAnswersStmt;
     //Db connection handler
     private DBHandler db;
     
@@ -234,7 +235,24 @@ public class QuizDAO {
         System.out.println("Updated clientAnswers, #rows: " + updatedRows);
     }
     
-    
+    public ArrayList<String> getClientAnswers(int userId, int questionId){
+        ArrayList<String> givenAnswers = new ArrayList<>();
+        ResultSet set = null;
+        try{
+            fetchClientAnswersStmt.setInt(1, questionId);
+            fetchClientAnswersStmt.setInt(2, userId);
+            set = fetchClientAnswersStmt.executeQuery();
+            while(set.next()){
+                String answer = set.getString("text");
+                givenAnswers.add(answer);
+            }
+            
+        } catch (SQLException e){
+            System.out.println("Could not fetch client answers");
+            e.printStackTrace();
+        }
+        return givenAnswers;
+    }
     
     public void addOnGoingQuiz(int userId, int quizId){
         int updatedRows = 0;
@@ -284,6 +302,7 @@ public class QuizDAO {
         storeClientAnswers = db.getCon().prepareStatement("INSERT INTO clientAnswers (text, user_id, question_id) VALUES (?,?,?)");
         createNewOnGoingQuizStmt = db.getCon().prepareStatement("INSERT INTO onGoingQuizzes (user_id, quiz_id) VALUES (?,?)");
         selectOnGoingQuizzesByUserIdStmt = db.getCon().prepareStatement("SELECT q.id, q.category, q.difficulty FROM quizzes AS q INNER JOIN onGoingQuizzes AS o ON q.id = o.quiz_id WHERE o.user_id = ?");
+        fetchClientAnswersStmt = db.getCon().prepareStatement("SELECT text FROM clientAnswers WHERE question_id = ? AND user_id = ?");
     }
 
     

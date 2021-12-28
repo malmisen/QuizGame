@@ -22,8 +22,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                  <li th:each="question: ${quiz.getQuestions()}">
                      <h2 th:text="${question.getQuestion()}"></h2>
                      <ul>
+                         
                          <li th:each="alternative: ${question.getAlternativesList()}">
-                             <input type="checkbox" th:name="${question.getQuestionId()}" th:value="${alternative.getAlternative()}"/>
+                             <input th:if="true==${alternative.getChecked()}" type="checkbox" th:name="${question.getQuestionId()}" th:value="${alternative.getAlternative()}" checked="true"/>
+                             <input th:if="true!=${alternative.getChecked()}" type="checkbox" th:name="${question.getQuestionId()}" th:value="${alternative.getAlternative()}"/>
                              <label th:text="${alternative.getAlternative()}"></label>
                          </li>
                      </ul>
