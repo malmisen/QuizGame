@@ -78,6 +78,26 @@ public class GameController {
         return "quizzing.html";
     }
     
+    @RequestMapping(value= "/playSavedQuiz", method = RequestMethod.GET)
+    public String playSavedQuiz(@RequestParam("userId") int userId, @RequestParam("quizId") int quizId, ModelMap model){
+        QuizDAO quizDAO = new QuizDAO();
+        Quiz quiz = quizDAO.getQuiz(quizId);
+        ArrayList<Question> quests = quizDAO.getQuestionsByQuizId(quizId);
+        quiz.setQuestions(quests);
+        quests = quizDAO.getAlternativesByQuestionId(quests);
+        quiz.setQuestions(quests);
+        quiz.setId(quizId);
+        
+        
+        model.addAttribute("quiz", quiz);
+        model.addAttribute("difficulty", quiz.getDifficulty());
+        model.addAttribute("category", quiz.getCategory());
+        model.addAttribute("score", "score");
+        model.addAttribute("userId", userId);
+        
+        return "quizzing.html";
+    }
+    
     /**
      * Provides client with the results of the quiz
      * 
