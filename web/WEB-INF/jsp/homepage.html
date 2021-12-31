@@ -10,7 +10,7 @@
         <div>
             
             
-          <form th:action="@{/playQuiz}" method="GET">
+<!--          <form th:action="@{/playQuiz}" method="GET">
           <input type='hidden' name='userId' th:value='${id}'/>          
                     <ul>
                         <li th:each="category : ${categories}">
@@ -23,7 +23,7 @@
                     
                     <input type='submit' value='submit'/>
           
-                    </form>
+                    </form>-->
                   
             
             
@@ -46,16 +46,16 @@
         </div>
         
         <div>
-             <table>            
-             <thead>
-                 <tr><td>Previous results</td></tr>
-             </thead>
-             <tbody>
+            <h4>Previous Results</h4>
+             <table> 
+                <tr>
+                <th>Category</th>
+                <th>Score</th>
+                </tr>
                 <tr th:each="result: ${results}">
-                   <td th:text="${result.getQuiz()}" />
+                   <td th:text="${result.getCategory()}"/>
                    <td th:text="${result.getScore()}"/>
-                 </tr>
-             </tbody>
+                </tr>
              
          </table>
         </div>

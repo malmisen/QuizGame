@@ -23,7 +23,6 @@ public class WelcomeController {
     public String start(ModelMap model) { //method name is not mapped
         
         /* MOVE BACK TO HOMEPAGECONTROLLER */
-        /*
         
         beans.User user = new beans.User();
         UserDAO dao = new UserDAO();
@@ -48,7 +47,7 @@ public class WelcomeController {
 
         /* MOVE BACK TO HOMEPAGECONTROLLER */
 
-        return "index"; // CHANGE BACK TO INDEX
+        return "homepage.html"; // CHANGE BACK TO INDEX
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)

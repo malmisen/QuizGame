@@ -35,11 +35,12 @@ public class UserDAO {
     private static final String USER_COLUMN_SCORE_NAME          = "score";
     
     //QUIZZES TABLE
-    private static final String QUIZZES_COLUMN_SUBJECT_NAME     = "subject";
+    private static final String QUIZZES_COLUMN_CATEGORY_NAME    = "category";
     private static final String QUIZZES_COLUMN_ID_NAME          = "id";
     
     //RESULTS TABLE    
     private static final String RESULTS_COLUMN_SCORE_NAME       = "score";
+    private static final String RESULTS_COLUMN_ID_NAME          = "result_id";
     private static final String RESULTS_COLUMN_TOTAL_SCORE_NAME = "totalScore";
     
     private DBHandler db;
@@ -52,6 +53,7 @@ public class UserDAO {
     private PreparedStatement getUserTotalScoreStatement;
     private PreparedStatement getUserResultByUserAndQuizIdStmt;
     private PreparedStatement getUserByIdStmt;
+    private PreparedStatement getUserResults;
 
     /**
      * Constructor.
@@ -257,17 +259,17 @@ public class UserDAO {
         UserResults results = new UserResults();
         UserResult result = null;
         try {
-            getUserQuizResults.setInt(1, user.getId());
-            resultSet = getUserQuizResults.executeQuery();
+            getUserResults.setInt(1, user.getId());
+            resultSet = getUserResults.executeQuery();
             int count = 0;
             while (resultSet.next()) {
                 result = new UserResult();
-                result.setCategory(resultSet.getString(QUIZZES_COLUMN_SUBJECT_NAME));
                 result.setScore(resultSet.getInt(RESULTS_COLUMN_SCORE_NAME));
-                result.setQuizId(resultSet.getInt(QUIZZES_COLUMN_ID_NAME));
+                result.setCategory(resultSet.getString(QUIZZES_COLUMN_CATEGORY_NAME));              
 
                 results.addResults(result);
                 count++;
+                System.out.println(result);
             }
             
         }catch(SQLException e){
@@ -309,6 +311,7 @@ public class UserDAO {
         getUserTotalScoreStatement = db.getCon().prepareStatement("TO DO");
         getUserResultByUserAndQuizIdStmt = db.getCon().prepareStatement("SELECT q.category, q.difficulty, q.id,r.score, r.user_id FROM quizzes AS q INNER JOIN results AS r WHERE q.id = ? AND r.user_id = ?");
         getUserByIdStmt = db.getCon().prepareCall("SELECT * FROM users WHERE id = ?");
+        getUserResults = db.getCon().prepareCall("SELECT score, quiz_id, category FROM results INNER JOIN quizzes WHERE user_id = ?");
     }    
 
    
