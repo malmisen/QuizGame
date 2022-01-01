@@ -1,5 +1,7 @@
 package controller;
 
+import beans.Leaderboard;
+import beans.LeaderboardResult;
 import beans.Quiz;
 import beans.User;
 import beans.UserResults;
@@ -43,8 +45,9 @@ public class WelcomeController {
         UserResults results = dao.getUserResults(dbUser);
         model.addAttribute("results", results.getResults());
         
-//        LeaderboardResult result = 
-
+        LeaderboardResult leaderboard = dao.getLeaderboardResult(result); 
+        model.addAttribute("leaderboard", leaderboard.getTotalScore());
+        
         /* MOVE BACK TO HOMEPAGECONTROLLER */
 
         return "homepage.html"; // CHANGE BACK TO INDEX

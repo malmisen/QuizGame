@@ -24,20 +24,19 @@
                     <input type='submit' value='submit'/>
           
                     </form>-->
-                  
-            
-            
+
             <form th:action="@{/playQuiz}" method="GET">
                 <input type='hidden' name='userId' th:value='${id}'/> 
-                <ul>
-                <li th:each="category : ${categories}">
+                <p>Category</p>
+                <div th:each="category : ${categories}">
                 <input type="radio" th:text="${category}" name="category" th:value="${category}"/>
-                </li>
-                <li th:each="difficulty : ${difficulties}">
+                </div>
+                <p>Difficulty</p>
+                <div th:each="difficulty : ${difficulties}">
                 <input type="radio" th:text="${difficulty}" name="difficulty" th:value="${difficulty}"/>
-                </li>
-                </ul>
-                <input type='submit' value='submit'/>
+                </div>
+                
+                <input type='submit' value='Play'/>
             </form>
              
           
@@ -46,25 +45,41 @@
         </div>
         
         <div>
-            <h4>Previous Results</h4>
-             <table> 
+            <h4>Your Previous Results</h4>
+             <table border="1"> 
                 <tr>
                 <th>Category</th>
+                <th>Difficulty</th>
                 <th>Score</th>
                 </tr>
                 <tr th:each="result: ${results}">
                    <td th:text="${result.getCategory()}"/>
+                   <td th:text="${result.getDifficulty()}"/>
                    <td th:text="${result.getScore()}"/>
                 </tr>
              
          </table>
         </div>
         
+        <div>
+            <h4>Leaderboard</h4>
+            <table border="1">
+                <tr>
+                    <th>User</th>
+                    <th>Total Score</th>
+                </tr>
+                <tr th:each="leader: ${leaderboard}">
+                    <td th:text="${leader.getUser()}"/>
+                    <td th:text="${leader.getScore()"/>
+                </tr>
+            </table>
+        </div>
+        
         
         <form th:action="@{/playSavedQuiz}" method="GET">
             <input type='hidden' name='userId' th:value='${id}'/> 
             
-            <h3>On Going quizzes</h3>
+            <h4>Your Ongoing Quizzes</h4>
             <ul>
                 <li th:each="quiz : ${onGoingQuizzes}">
                    
