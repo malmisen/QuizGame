@@ -28,7 +28,7 @@ public class WelcomeController {
         
         beans.User user = new beans.User();
         UserDAO dao = new UserDAO();
-        beans.LeaderboardResult result = new beans.LeaderboardResult();
+        beans.Leaderboard result = new beans.Leaderboard();
         
         user.setUsername("stevie");                          //change back to username
         beans.User dbUser = dao.getUserByUsername("stevie"); //change back to username
@@ -45,8 +45,8 @@ public class WelcomeController {
         UserResults results = dao.getUserResults(dbUser);
         model.addAttribute("results", results.getResults());
         
-        LeaderboardResult leaderboard = dao.getLeaderboardResult(result); 
-        model.addAttribute("leaderboard", leaderboard.getTotalScore());
+        Leaderboard leaderboard = dao.getTotalScore(); 
+        model.addAttribute("leaderboard", leaderboard.getLeaderboard());
         
         /* MOVE BACK TO HOMEPAGECONTROLLER */
 

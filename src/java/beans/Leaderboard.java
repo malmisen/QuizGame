@@ -21,7 +21,12 @@ public class Leaderboard implements Serializable {
         size++;
         leaderboard.add(result);
     }
-    public ArrayList<LeaderboardResult> getLeaderboardResult() {
+    
+    public LeaderboardResult getLeaderboardResult(int i) {
+        return leaderboard.get(i);
+    }
+
+    public ArrayList<LeaderboardResult> getLeaderboard() {
         return leaderboard;
     }
 }

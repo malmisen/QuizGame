@@ -7,8 +7,13 @@ import java.io.Serializable;
  */
 public class LeaderboardResult implements Serializable {
     
+    private int user_id;
     private String username;
     private int totalScore;
+    
+    public void setUserId(int id) {
+        this.user_id = id;
+    }
     
     public void setUsername(String username) {
         this.username = username;
@@ -24,5 +29,9 @@ public class LeaderboardResult implements Serializable {
     
     public int getTotalScore() {
         return totalScore;
+    }
+    
+    public int getUserId(){
+        return user_id;
     }
 }

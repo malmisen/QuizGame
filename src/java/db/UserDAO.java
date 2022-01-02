@@ -41,8 +41,8 @@ public class UserDAO {
     
     //RESULTS TABLE    
     private static final String RESULTS_COLUMN_SCORE_NAME       = "score";
-    private static final String RESULTS_COLUMN_ID_NAME          = "result_id";
-    private static final String RESULTS_COLUMN_TOTAL_SCORE_NAME = "totalScore";
+    private static final String RESULTS_COLUMN_ID_NAME          = "user_id";
+    private static final String RESULTS_COLUMN_TOTAL_SCORE_NAME = "sum(score)";
     
     private DBHandler db;
     private PreparedStatement getUserQuizResults;
@@ -204,10 +204,6 @@ public class UserDAO {
             updateUserQuizResultsStatement.setInt(1, result.getScore());
             updateUserQuizResultsStatement.setInt(2, user.getId());
             updateUserQuizResultsStatement.setInt(3, result.getQuizId());
-            
-//            updateUserTotalScoreStatement.setString(1, leaderboard.getUsername());
-//            updateUserTotalScoreStatement.setInt(2, leaderboard.getTotalScore());
-            
             updatedRows = updateUserQuizResultsStatement.executeUpdate();
             if (updatedRows != 1) {
                 System.out.println("Could not update results table");
@@ -237,16 +233,18 @@ public class UserDAO {
 //        return false;
 //    }
     
-    public LeaderboardResult getLeaderboardResult (LeaderboardResult leaderboard) {
+    public Leaderboard getTotalScore () {
         ResultSet resultSet = null;
-        LeaderboardResult results = new LeaderboardResult();
+        Leaderboard results = new Leaderboard();
+        LeaderboardResult result = null;
         try {
-            getUserTotalScoreStatement.setString(1, leaderboard.getUsername());
             resultSet = getUserTotalScoreStatement.executeQuery();
             int count = 0;
             while (resultSet.next()) {
-                results.setUsername(USER_COLUMN_USERNAME_NAME);
-                results.setTotalScore(resultSet.getInt(RESULTS_COLUMN_TOTAL_SCORE_NAME));
+                result = new LeaderboardResult();
+                result.setUsername(resultSet.getString(USER_COLUMN_USERNAME_NAME));
+                result.setTotalScore(resultSet.getInt(RESULTS_COLUMN_TOTAL_SCORE_NAME));
+                results.addResults(result);
                 count++;
             }
             
@@ -311,7 +309,7 @@ public class UserDAO {
         getUserQuizResults = db.getCon().prepareStatement("SELECT q.subject, q.id,r.score FROM quizzes AS q INNER JOIN results AS r WHERE q.id = r.quiz_id AND r.user_id = ?");
         updateUserQuizResultsStatement = db.getCon().prepareStatement("INSERT INTO results (score, user_id, quiz_id) VALUES (?,?,?)");
         updateUserTotalScoreStatement = db.getCon().prepareStatement("INSERT INTO leaderboard (user_id, totalScore) VALUES (?,?)");
-        getUserTotalScoreStatement = db.getCon().prepareStatement("SELECT username, totalScore FROM leaderboard where user_id = ?");
+        getUserTotalScoreStatement = db.getCon().prepareStatement("SELECT user_id, sum(score), username FROM results INNER JOIN users ON results.user_id=users.id GROUP BY user_id");
         getUserResultByUserAndQuizIdStmt = db.getCon().prepareStatement("SELECT q.category, q.difficulty, q.id,r.score, r.user_id FROM quizzes AS q INNER JOIN results AS r WHERE q.id = ? AND r.user_id = ?");
         getUserByIdStmt = db.getCon().prepareCall("SELECT * FROM users WHERE id = ?");
         getUserResults = db.getCon().prepareCall("SELECT score, quiz_id, category, difficulty FROM results INNER JOIN quizzes WHERE user_id = ? AND quiz_id = quizzes.id;");

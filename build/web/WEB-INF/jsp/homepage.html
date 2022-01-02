@@ -8,23 +8,6 @@
         <h2>Welcome <span th:text="${user.getUsername()}"></span></h2>
         <h4>Choose which quiz you would like to play.</h4>
         <div>
-            
-            
-<!--          <form th:action="@{/playQuiz}" method="GET">
-          <input type='hidden' name='userId' th:value='${id}'/>          
-                    <ul>
-                        <li th:each="category : ${categories}">
-                            <input type="checkbox" th:text="${category}" name="category" th:value="${category}"/>                            
-                        </li>
-                        <li th:each="difficulty : ${difficulties}">                            
-                            <input type="checkbox" th:text="${difficulty}" name="difficulty" th:value="${difficulty}"/>
-                        </li>
-                    </ul>
-                    
-                    <input type='submit' value='submit'/>
-          
-                    </form>-->
-
             <form th:action="@{/playQuiz}" method="GET">
                 <input type='hidden' name='userId' th:value='${id}'/> 
                 <p>Category</p>
@@ -38,10 +21,6 @@
                 
                 <input type='submit' value='Play'/>
             </form>
-             
-          
-          
-            
         </div>
         
         <div>
@@ -69,8 +48,8 @@
                     <th>Total Score</th>
                 </tr>
                 <tr th:each="leader: ${leaderboard}">
-                    <td th:text="${leader.getUser()}"/>
-                    <td th:text="${leader.getScore()"/>
+                    <td th:text="${leader.getUsername()}"/>
+                    <td th:text="${leader.getTotalScore()}"/>
                 </tr>
             </table>
         </div>
