@@ -12,10 +12,19 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <body>
         
         <div class="container">
-            <h1>Category: <span th:text="${category}"></span> </h1>
-            <h1>Difficulty: <span th:text="${difficulty}"></span></h1>
-            <h2 th:if="score!=${score}">Your score: <span th:text="${score}"></span></h2>
-       
+            <div class="container-fluid">
+                <h3>Category: <span th:text="${category}"/></h3>
+                <h4>Difficulty: <span th:text="${difficulty}"/></h4>
+                         
+                            <div th:if="score!=${score}" class="alert alert-success" role="alert">
+                                <h4 class="alert-heading">Well done!</h4>
+                                <hr/>
+                                <h5>Your score: <span th:text="${score}"></span></h5>
+                                <p class="mb-0">If, you ain't satisfied you can always try again, or save the quiz and try again later? </p>
+                            </div>
+                  
+            </div>
+   
         <form th:action="@{/result}" th:object="${quiz}" method="POST">
              <input type="hidden" name="QuizId" th:value="${quiz.getId()}"/>
              <input type="hidden" name="userId" th:value="${userId}"/>
@@ -63,8 +72,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                      </ul>
                  </li>
              </ul>
-             <button type="submit" name="action" value="submit" >Leave</button>
-             <button type="submit" name="action" value="save" >Save</button>
+             <button type="submit" name="action" value="submit" class="btn btn-success">Try again!</button>
+             <button type="submit" name="action" value="save" class="btn btn-primary">Save</button>
         </form>
         </div>
     </body>
