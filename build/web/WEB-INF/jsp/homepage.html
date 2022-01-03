@@ -73,11 +73,11 @@
         <div class="row">
         <form th:action="@{/playSavedQuiz}" method="GET">
             <input type='hidden' name='userId' th:value='${id}'/> 
-            
+
             <h4>Your Ongoing Quizzes</h4>
             <ul>
                 <li th:each="quiz : ${onGoingQuizzes}">
-                   
+
                     <button type = "submit" name="quizId" th:value="${quiz.getId()}">Continue</button>
                     <label>Category: <span th:text="${quiz.getCategory()}">  </span>, 
                            Difficulty: <span th:text="${quiz.getDifficulty()}"></span>, 
@@ -85,7 +85,7 @@
                             </label>
                 </li>
             </ul>
-  
+
             </form>
         </div>   
         </div>
