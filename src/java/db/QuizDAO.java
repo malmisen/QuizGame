@@ -38,6 +38,7 @@ public class QuizDAO {
     PreparedStatement selectOnGoingQuizzesByUserIdStmt;
     PreparedStatement fetchClientAnswersStmt;
     PreparedStatement  fetchOnGoingQuizByQuizIdStmt;
+    PreparedStatement updateScoreWithQuizIdStmt;
     //Db connection handler
     private DBHandler db;
     
@@ -183,6 +184,7 @@ public class QuizDAO {
                 quiz.setId(set.getInt("id"));
                 quiz.setCategory(set.getString("category"));
                 quiz.setDifficulty(set.getString("difficulty"));
+                quiz.setCurrentScore(set.getInt("score"));
             }
             
         } catch (SQLException e){
@@ -280,6 +282,7 @@ public class QuizDAO {
                 quiz.setId(set.getInt("id"));
                 quiz.setCategory(set.getString("category"));
                 quiz.setDifficulty(set.getString("difficulty"));
+                quiz.setCurrentScore(set.getInt("score"));
                 quizzes.add(quiz);
             }
             
@@ -313,6 +316,18 @@ public class QuizDAO {
        
     }
     
+    public void updateQuizCurrentScore(int score, int quizId){
+        int updatedRows = 0;
+        try{
+        updateScoreWithQuizIdStmt.setInt(1, score);
+        updateScoreWithQuizIdStmt.setInt(2, quizId);
+        updatedRows = updateScoreWithQuizIdStmt.executeUpdate();
+        } catch (SQLException e){
+            System.out.println("Could not update quiz table with score");
+            e.printStackTrace();
+        }
+    }
+    
     private void prepareStatements() throws SQLException{
         createNewQuizStmt = db.getCon().prepareStatement("INSERT INTO quizzes (category, difficulty) VALUES (?,?)");
         createQuestionsStmt = db.getCon().prepareStatement("INSERT INTO questions (text, quiz_id) VALUES (?,?)");
@@ -324,9 +339,10 @@ public class QuizDAO {
         getAlternativesByQuestionAndQuizIdStmt = db.getCon().prepareStatement("SELECT id, text, isCorrect FROM alternative WHERE question_id = ?");
         storeClientAnswers = db.getCon().prepareStatement("INSERT INTO clientAnswers (text, user_id, question_id) VALUES (?,?,?)");
         createNewOnGoingQuizStmt = db.getCon().prepareStatement("INSERT INTO onGoingQuizzes (user_id, quiz_id) VALUES (?,?)");
-        selectOnGoingQuizzesByUserIdStmt = db.getCon().prepareStatement("SELECT q.id, q.category, q.difficulty FROM quizzes AS q INNER JOIN onGoingQuizzes AS o ON q.id = o.quiz_id WHERE o.user_id = ?");
+        selectOnGoingQuizzesByUserIdStmt = db.getCon().prepareStatement("SELECT q.id, q.category, q.difficulty, q.score FROM quizzes AS q INNER JOIN onGoingQuizzes AS o ON q.id = o.quiz_id WHERE o.user_id = ?");
         fetchClientAnswersStmt = db.getCon().prepareStatement("SELECT text FROM clientAnswers WHERE question_id = ? AND user_id = ?");
         fetchOnGoingQuizByQuizIdStmt = db.getCon().prepareStatement("SELECT id FROM onGoingQuizzes WHERE quiz_id = ?");
+        updateScoreWithQuizIdStmt = db.getCon().prepareStatement("UPDATE quizzes SET score = ? WHERE id = ?");
     }
 
     

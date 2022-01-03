@@ -66,6 +66,7 @@ public class RegisterController {
 
                 
                 model.addAttribute("username", username);
+           
                 return "redirect:http://localhost:8080/QuizGame/home";
             }
             

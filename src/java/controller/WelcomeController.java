@@ -93,6 +93,7 @@ public class WelcomeController {
             
             model.addAttribute("username", dbUser.getUsername());
             
+            
             return "redirect:http://localhost:8080/QuizGame/home";
           
             //return "homepage.html";
