@@ -123,6 +123,7 @@ public class GameController {
         Map<String, String[]> params = req.getParameterMap();
         String[] quizIdString = params.get("QuizId");
         String[] userIdString = params.get("userId");
+        
         int quizId = Integer.parseInt(quizIdString[0]);
         int userId = Integer.parseInt(userIdString[0]);
 
@@ -197,7 +198,6 @@ public class GameController {
                 dao.storeAnswers(userId, questions.get(i).getQuestionId(), clientAnswers);
             }
         }
-        
         for(int i = 0; i < questions.size(); i++){
              ArrayList<Alternative> alternatives = questions.get(i).getAlternativesList();
              ArrayList<String> clientAnswers = dao.getClientAnswers(userId, questions.get(i).getQuestionId());
@@ -211,7 +211,8 @@ public class GameController {
                 }
              }
         }
-       
+        
+        dao.updateQuizCurrentScore(score, quizId);
         quiz.setQuestions(questions);
         System.out.println("Score: " + score);
         

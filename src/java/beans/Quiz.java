@@ -16,9 +16,16 @@ public class Quiz implements Serializable{
     private String category;
     private String difficulty;
     private ArrayList<Question> questions;
+    private int currentScore = 0;
     
     public Quiz(){};
     
+    public void setCurrentScore(int score){
+        currentScore = score;
+    }
+    public int getCurrentScore(){
+        return currentScore;
+    }
     public void setId(int id){ this.id = id; }
     public int getId(){ return id;}
     public void setCategory(String category){this.category = category;}
