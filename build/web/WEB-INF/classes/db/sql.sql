@@ -3,9 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Other/SQLTemplate.sql to edit this template
  */
 
-
-
-
 /**
  * The sql is run in MySQLWorkbench 
  * this is just a file used to save the sql code for safe keeping
@@ -145,7 +142,6 @@ INSERT INTO users (firstName, lastName, email, username, password) VALUES ('Stev
 SELECT * FROM users WHERE username = 'stevie';
 
 SELECT * FROM users;
-
 
 CREATE TABLE IF NOT EXISTS alternative(
 	id INT AUTO_INCREMENT PRIMARY KEY,

@@ -1,7 +1,9 @@
 package controller;
 
+import beans.Leaderboard;
 import beans.LeaderboardResult;
 import beans.Quiz;
+import beans.User;
 import beans.UserResults;
 import db.QuizDAO;
 import db.UserDAO;
@@ -24,39 +26,36 @@ public class HomepageController {
 //        return "index";
 //    }
     
-    /* THIS METHOD IS NEVER USED
+  
     
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String submit(
-//            @RequestParam("username") String username,
+            @RequestParam("username") String username,
             ModelMap model) {
         
-        beans.User user = new beans.User();
-        UserDAO dao = new UserDAO();
-        beans.LeaderboardResult result = new beans.LeaderboardResult();
+            UserDAO userDAO = new UserDAO();
+            User dbUser = userDAO.getUserByUsername(username);
+            model.addAttribute("user", dbUser);
+            model.addAttribute("id", dbUser.getId());
+            
+            String[] categories = {"Linux", "DevOps", "Docker", "Networking", "Programming"};
+            model.addAttribute("categories", categories);
         
-        user.setUsername("stevie");                          //change back to username
-        beans.User dbUser = dao.getUserByUsername("stevie"); //change back to username
-        model.addAttribute("user", dbUser);
+            String[] difficulties = {"Easy", "Medium", "Hard"};
+            model.addAttribute("difficulties", difficulties);
+            
+            UserResults results = userDAO.getUserResults(dbUser);
+            model.addAttribute("results", results.getResults());
+            
+            QuizDAO quizDAO = new QuizDAO();
+            ArrayList<Quiz> onGoingQuizzes = quizDAO.getOnGoingQuizzes(dbUser.getId());
+            model.addAttribute("onGoingQuizzes", onGoingQuizzes);
+            
+            Leaderboard leaderboard = userDAO.getTotalScore(); 
+            model.addAttribute("leaderboard", leaderboard.getLeaderboard());
         
-        String[] categories = {"linux", "devOps", "docker", "networking", "programming"};
-        model.addAttribute("categories", categories);
         
-        String[] difficulties = {"easy", "medium", "hard"};
-        model.addAttribute("difficulties", difficulties);
-        
-        model.addAttribute("id", user.getId());
-        
-        UserResults results = dao.getUserResults(dbUser);
-        model.addAttribute("results", results.getResults());
-        
-        QuizDAO quizDAO = new QuizDAO();
-        ArrayList<Quiz> onGoingQuizzes = quizDAO.getOnGoingQuizzes(dbUser.getId());
-        model.addAttribute("onGoingQuizzes", onGoingQuizzes);
-        
-//        LeaderboardResult result = 
-        
-    return "homepage.html";
+            return "homepage.html";
     }
-*/
+
 }

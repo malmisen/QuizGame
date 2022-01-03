@@ -64,28 +64,9 @@ public class RegisterController {
                     return "register.html";
                 }
 
-                //model.addAttribute("User", newUser);
-          
-            
-            UserDAO userDAO = new UserDAO();
-            User dbUser = userDAO.getUserByUsername(username);
-            model.addAttribute("user", dbUser);
-            model.addAttribute("id", dbUser.getId());
-            
-            String[] categories = {"Linux", "DevOps", "Docker", "Networking", "Programming"};
-            model.addAttribute("categories", categories);
-        
-            String[] difficulties = {"Easy", "Medium", "Hard"};
-            model.addAttribute("difficulties", difficulties);
-            
-            UserResults results = userDAO.getUserResults(dbUser);
-            model.addAttribute("results", results.getResults());
-            
-            QuizDAO quizDAO = new QuizDAO();
-            ArrayList<Quiz> onGoingQuizzes = quizDAO.getOnGoingQuizzes(dbUser.getId());
-            model.addAttribute("onGoingQuizzes", onGoingQuizzes);
-
-                return "homepage.html";  
+                
+                model.addAttribute("username", username);
+                return "redirect:http://localhost:8080/QuizGame/home";
             }
             
         }

@@ -173,84 +173,46 @@ public class GameController {
     /**
      * Saves the current clients ongoing quiz
      */
-    @RequestMapping(value = "/result", method = RequestMethod.POST, params="action=save")
-    public String saveQuiz(HttpServletRequest req, ModelMap model){
+    @RequestMapping(value = "/result", method = RequestMethod.POST, params = "action=save")
+    public String saveQuiz(HttpServletRequest req, ModelMap model) {
         System.out.println("Insicde SAVE QUIZ");
         Map<String, String[]> params = req.getParameterMap();
         String[] quizIdString = params.get("QuizId");
         String[] userIdString = params.get("userId");
         int quizId = Integer.parseInt(quizIdString[0]);
         int userId = Integer.parseInt(userIdString[0]);
-        
+
         System.out.println("QUIZ ID: " + quizId);
         System.out.println("User ID: " + userId);
-        
+
         QuizDAO dao = new QuizDAO();
         Quiz quiz = dao.getQuiz(quizId);
         ArrayList<Question> questions = dao.getQuestionsByQuizId(quizId);
         questions = dao.getAlternativesByQuestionId(questions);
         quiz.setQuestions(questions);
 
-        for(int i = 0; i < questions.size(); i++){
+        for (int i = 0; i < questions.size(); i++) {
             String[] clientAnswers = params.get(String.valueOf(questions.get(i).getQuestionId()));
 
-            if(clientAnswers != null){
+            if (clientAnswers != null) {
                 dao.storeAnswers(userId, questions.get(i).getQuestionId(), clientAnswers);
             }
         }
-            boolean exists = dao.getOnGoingQuiz(quizId);
-            if(!exists){
-                dao.addOnGoingQuiz(userId, quizId);
-            }
-        
-             /*  Need to be changed  */
-        
-            User user = new User();
-            
-            UserDAO userDAO = new UserDAO();
-            User dbUser = userDAO.getUserById(userId);
-            model.addAttribute("user", dbUser);
-            model.addAttribute("id", dbUser.getId());
-            
-            String[] categories = {"Linux", "DevOps", "Docker", "Networking", "Programming"};
-            model.addAttribute("categories", categories);
-        
-            String[] difficulties = {"Easy", "Medium", "Hard"};
-            model.addAttribute("difficulties", difficulties);
-            
-            UserResults results = userDAO.getUserResults(dbUser);
-            model.addAttribute("results", results.getResults());
-            
-            QuizDAO quizDAO = new QuizDAO();
-            ArrayList<Quiz> onGoingQuizzes = quizDAO.getOnGoingQuizzes(dbUser.getId());
-            model.addAttribute("onGoingQuizzes", onGoingQuizzes);
-            
-            
-        
-        /*
+
+        boolean exists = dao.getOnGoingQuiz(quizId);
+        if (!exists) {
+            dao.addOnGoingQuiz(userId, quizId);
+        }
+
+        /*  Need to be changed  */
         User user = new User();
-        UserDAO userdao = new UserDAO();
-        user.setUsername("stevie");                          //change back to username
-        beans.User dbUser = userdao.getUserByUsername("stevie"); //change back to username
-        model.addAttribute("user", dbUser);
-        
-        String[] categories = {"linux", "devOps", "docker", "networking", "programming"};
-        model.addAttribute("categories", categories);
-        
-        String[] difficulties = {"easy", "medium", "hard"};
-        model.addAttribute("difficulties", difficulties);
-        
-        model.addAttribute("id", user.getId());
-        
-        UserResults results = userdao.getUserResults(dbUser);
-        model.addAttribute("results", results.getResults());
-     
-       
-        ArrayList<Quiz> onGoingQuizzes = dao.getOnGoingQuizzes(user.getId());
-        model.addAttribute("onGoingQuizzes", onGoingQuizzes);
-        */
-        return "homepage.html";
-        
+
+        UserDAO userDAO = new UserDAO();
+        User dbUser = userDAO.getUserById(userId);
+
+        model.addAttribute("username", dbUser.getUsername());
+        return "redirect:http://localhost:8080/QuizGame/home";
+
     }
     
     
