@@ -39,7 +39,7 @@ public class GameController {
      * @return quizzing page
      */
     @RequestMapping(value = "/playQuiz", method = RequestMethod.GET)
-    public String getQuizzingPage(@RequestParam("category") String category, 
+    public String playNewQuiz(@RequestParam("category") String category, 
                                   @RequestParam("difficulty") String difficulty,
                                   @RequestParam("userId") int userId,
                                   ModelMap model) {
@@ -114,8 +114,50 @@ public class GameController {
         
         return "quizzing.html";
     }
-    
+   
     /**
+     * Saves the current clients ongoing quiz
+     */
+    @RequestMapping(value = "/result", method = RequestMethod.POST, params = "action=save")
+    public String saveQuiz(HttpServletRequest req, ModelMap model) {
+        Map<String, String[]> params = req.getParameterMap();
+        String[] quizIdString = params.get("QuizId");
+        String[] userIdString = params.get("userId");
+        int quizId = Integer.parseInt(quizIdString[0]);
+        int userId = Integer.parseInt(userIdString[0]);
+
+        QuizDAO dao = new QuizDAO();
+        Quiz quiz = dao.getQuiz(quizId);
+        ArrayList<Question> questions = dao.getQuestionsByQuizId(quizId);
+        questions = dao.getAlternativesByQuestionId(questions);
+        quiz.setQuestions(questions);
+
+        for (int i = 0; i < questions.size(); i++) {
+            String[] clientAnswers = params.get(String.valueOf(questions.get(i).getQuestionId()));
+
+            if (clientAnswers != null) {
+                dao.storeAnswers(userId, questions.get(i).getQuestionId(), clientAnswers);
+            }
+        }
+
+        boolean exists = dao.getOnGoingQuiz(quizId);
+        if (!exists) {
+            dao.addOnGoingQuiz(userId, quizId);
+        }
+
+        /*  Need to be changed  */
+        User user = new User();
+
+        UserDAO userDAO = new UserDAO();
+        User dbUser = userDAO.getUserById(userId);
+
+        model.addAttribute("username", dbUser.getUsername());
+        return "redirect:http://localhost:8080/QuizGame/home";
+
+    }
+    
+    
+     /**
      * Provides client with the results of the quiz
      * 
      * @param req
@@ -138,9 +180,8 @@ public class GameController {
         QuizDAO dao = new QuizDAO();
         Quiz quiz = dao.getQuiz(quizId);
         ArrayList<Question> questions = dao.getQuestionsByQuizId(quizId);
-        quiz.setQuestions(questions);
         questions = dao.getAlternativesByQuestionId(questions);
-        quiz.setQuestions(questions);
+     
 
         
         //Calc client results
@@ -148,10 +189,30 @@ public class GameController {
         for(int i = 0; i < questions.size(); i++){
             String[] clientAnswers = parameters.get(String.valueOf(questions.get(i).getQuestionId()));
             if(clientAnswers != null){ 
-                score += questions.get(i).calculatePoints(clientAnswers);
+                int temp = questions.get(i).calculatePoints(clientAnswers);
+                if(temp > 0){
+                    score += temp;
+                    questions.get(i).setIsCorrectlyAnswered(true);
+                }
+                dao.storeAnswers(userId, questions.get(i).getQuestionId(), clientAnswers);
             }
         }
         
+        for(int i = 0; i < questions.size(); i++){
+             ArrayList<Alternative> alternatives = questions.get(i).getAlternativesList();
+             ArrayList<String> clientAnswers = dao.getClientAnswers(userId, questions.get(i).getQuestionId());
+             if(clientAnswers.size() > 0){
+                for(int j = 0; j < alternatives.size(); j++){
+                    for(int k = 0; k < clientAnswers.size(); k++){
+                        if(clientAnswers.get(k).equals(alternatives.get(j).getAlternative())){
+                            alternatives.get(j).setChecked(true);
+                        }
+                    }
+                }
+             }
+        }
+       
+        quiz.setQuestions(questions);
         System.out.println("Score: " + score);
         
         User user = new User();
@@ -167,91 +228,9 @@ public class GameController {
         model.addAttribute("score", score);
         model.addAttribute("difficulty", difficulty);
         model.addAttribute("category", category);
-        return "quizzing.html";
+        return "result.html";
     }
     
-    /**
-     * Saves the current clients ongoing quiz
-     */
-    @RequestMapping(value = "/result", method = RequestMethod.POST, params="action=save")
-    public String saveQuiz(HttpServletRequest req, ModelMap model){
-        System.out.println("Insicde SAVE QUIZ");
-        Map<String, String[]> params = req.getParameterMap();
-        String[] quizIdString = params.get("QuizId");
-        String[] userIdString = params.get("userId");
-        int quizId = Integer.parseInt(quizIdString[0]);
-        int userId = Integer.parseInt(userIdString[0]);
-        
-        System.out.println("QUIZ ID: " + quizId);
-        System.out.println("User ID: " + userId);
-        
-        QuizDAO dao = new QuizDAO();
-        Quiz quiz = dao.getQuiz(quizId);
-        ArrayList<Question> questions = dao.getQuestionsByQuizId(quizId);
-        questions = dao.getAlternativesByQuestionId(questions);
-        quiz.setQuestions(questions);
-
-        for(int i = 0; i < questions.size(); i++){
-            String[] clientAnswers = params.get(String.valueOf(questions.get(i).getQuestionId()));
-
-            if(clientAnswers != null){
-                dao.storeAnswers(userId, questions.get(i).getQuestionId(), clientAnswers);
-            }
-        }
-            boolean exists = dao.getOnGoingQuiz(quizId);
-            if(!exists){
-                dao.addOnGoingQuiz(userId, quizId);
-            }
-        
-             /*  Need to be changed  */
-        
-            User user = new User();
-            
-            UserDAO userDAO = new UserDAO();
-            User dbUser = userDAO.getUserById(userId);
-            model.addAttribute("user", dbUser);
-            model.addAttribute("id", dbUser.getId());
-            
-            String[] categories = {"Linux", "DevOps", "Docker", "Networking", "Programming"};
-            model.addAttribute("categories", categories);
-        
-            String[] difficulties = {"Easy", "Medium", "Hard"};
-            model.addAttribute("difficulties", difficulties);
-            
-            UserResults results = userDAO.getUserResults(dbUser);
-            model.addAttribute("results", results.getResults());
-            
-            QuizDAO quizDAO = new QuizDAO();
-            ArrayList<Quiz> onGoingQuizzes = quizDAO.getOnGoingQuizzes(dbUser.getId());
-            model.addAttribute("onGoingQuizzes", onGoingQuizzes);
-            
-            
-        
-        /*
-        User user = new User();
-        UserDAO userdao = new UserDAO();
-        user.setUsername("stevie");                          //change back to username
-        beans.User dbUser = userdao.getUserByUsername("stevie"); //change back to username
-        model.addAttribute("user", dbUser);
-        
-        String[] categories = {"linux", "devOps", "docker", "networking", "programming"};
-        model.addAttribute("categories", categories);
-        
-        String[] difficulties = {"easy", "medium", "hard"};
-        model.addAttribute("difficulties", difficulties);
-        
-        model.addAttribute("id", user.getId());
-        
-        UserResults results = userdao.getUserResults(dbUser);
-        model.addAttribute("results", results.getResults());
-     
-       
-        ArrayList<Quiz> onGoingQuizzes = dao.getOnGoingQuizzes(user.getId());
-        model.addAttribute("onGoingQuizzes", onGoingQuizzes);
-        */
-        return "homepage.html";
-        
-    }
     
     
 }

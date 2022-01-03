@@ -217,21 +217,6 @@ public class UserDAO {
         return res;
     }
     
-//    public boolean updateUserTotalScore(User user, LeaderboardResult result) {
-//        int updatedRows = 0;
-//        try {
-//            updateUserTotalScoreStatement.setInt(1, user.getId());
-//            updateUserTotalScoreStatement.setInt(2, result.getTotalScore());
-//            
-//            updatedRows = updateUserTotalScoreStatement.executeUpdate();
-//            if (updatedRows == 1) {
-//                return true;
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return false;
-//    }
     
     public Leaderboard getTotalScore () {
         ResultSet resultSet = null;
@@ -294,6 +279,7 @@ public class UserDAO {
                 user.setFirstName(set.getString("firstName"));
                 user.setLastName(set.getString("lastName"));
                 user.setPassword(set.getString("password"));
+                user.setUsername(set.getString("username"));
             }
         } catch (SQLException e){
             System.out.println("Could not fetch user by id");

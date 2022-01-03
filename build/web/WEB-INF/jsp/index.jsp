@@ -9,14 +9,10 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"/>
     </head>
      <body>
-        <table>
-            <tr>
-            <h1>Welcome to another quiz game</h1>
-        </tr>
-        <tr>
+        <div class="container p-3 my-3 border">
+            <div class="row">  
+        <h1>Welcome to another quiz game</h1>
         <h2>Please login or register</h2>
-        </tr>
-        <tr>
         <form method="GET" action="/QuizGame/login">
             Username <input type="text" name="username"><br>
             Password <input type="text" name="password"><br>
@@ -28,7 +24,7 @@
             <input type="hidden" name="action" value="register">
             <input type="submit" value="Register">
         </form>
-        </tr>
-        
+            </div>  
+        </div>    
     </body>
 </html>
