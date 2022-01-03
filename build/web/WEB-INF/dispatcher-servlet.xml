@@ -40,4 +40,6 @@
     </bean>
     <bean class="controller.GameController">
     </bean>
+    <bean class="controller.ResultController">
+    </bean>
 </beans>

@@ -18,8 +18,16 @@ public class Question {
     private HashMap<String, Alternative> alternatives;
     private ArrayList<Alternative> alternativesList;
     private HashMap<String,String> correct;
+    private boolean isCorrectlyAnswered = false;
     
     public Question(){};    
+    
+    public void setIsCorrectlyAnswered(boolean val){
+        isCorrectlyAnswered = val;
+    }
+    public boolean getIsCorrectlyAnswered(){
+        return isCorrectlyAnswered;
+    }
     
     public void setQuestionId(int id){
         questionId = id;

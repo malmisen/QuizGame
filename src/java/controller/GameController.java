@@ -39,7 +39,7 @@ public class GameController {
      * @return quizzing page
      */
     @RequestMapping(value = "/playQuiz", method = RequestMethod.GET)
-    public String getQuizzingPage(@RequestParam("category") String category, 
+    public String playNewQuiz(@RequestParam("category") String category, 
                                   @RequestParam("difficulty") String difficulty,
                                   @RequestParam("userId") int userId,
                                   ModelMap model) {
@@ -114,76 +114,17 @@ public class GameController {
         
         return "quizzing.html";
     }
-    
-    /**
-     * Provides client with the results of the quiz
-     * 
-     * @param req
-     * @param quizId
-     * @param model
-     * @return 
-     */
-    @RequestMapping(value = "/result", method = RequestMethod.POST, params="action=submit")
-    public String getResults(HttpServletRequest req, 
-                            @RequestParam("QuizId") int quizId, 
-                            @RequestParam("userId") int userId, 
-                            @RequestParam("difficulty") String difficulty,
-                            @RequestParam("category") String category,
-                            ModelMap model) {
-        //Contains client answers
-        Map<String, String[]> parameters = req.getParameterMap();
-        
-        
-        //Fetch questions and alternatives for the played guiz from DB to calculate points
-        QuizDAO dao = new QuizDAO();
-        Quiz quiz = dao.getQuiz(quizId);
-        ArrayList<Question> questions = dao.getQuestionsByQuizId(quizId);
-        quiz.setQuestions(questions);
-        questions = dao.getAlternativesByQuestionId(questions);
-        quiz.setQuestions(questions);
-
-        
-        //Calc client results
-        int score = 0; 
-        for(int i = 0; i < questions.size(); i++){
-            String[] clientAnswers = parameters.get(String.valueOf(questions.get(i).getQuestionId()));
-            if(clientAnswers != null){ 
-                score += questions.get(i).calculatePoints(clientAnswers);
-            }
-        }
-        
-        System.out.println("Score: " + score);
-        
-        User user = new User();
-        user.setId(userId);
-        UserResult result = new UserResult();
-        result.setQuizId(quizId);
-        result.setScore(score);
-        UserDAO userdao = new UserDAO();
-        result = userdao.updateUserResults(user, result);
-        
-        model.addAttribute("quiz", quiz);
-        model.addAttribute("userId", userId);
-        model.addAttribute("score", score);
-        model.addAttribute("difficulty", difficulty);
-        model.addAttribute("category", category);
-        return "quizzing.html";
-    }
-    
+   
     /**
      * Saves the current clients ongoing quiz
      */
     @RequestMapping(value = "/result", method = RequestMethod.POST, params = "action=save")
     public String saveQuiz(HttpServletRequest req, ModelMap model) {
-        System.out.println("Insicde SAVE QUIZ");
         Map<String, String[]> params = req.getParameterMap();
         String[] quizIdString = params.get("QuizId");
         String[] userIdString = params.get("userId");
         int quizId = Integer.parseInt(quizIdString[0]);
         int userId = Integer.parseInt(userIdString[0]);
-
-        System.out.println("QUIZ ID: " + quizId);
-        System.out.println("User ID: " + userId);
 
         QuizDAO dao = new QuizDAO();
         Quiz quiz = dao.getQuiz(quizId);
@@ -214,6 +155,82 @@ public class GameController {
         return "redirect:http://localhost:8080/QuizGame/home";
 
     }
+    
+    
+     /**
+     * Provides client with the results of the quiz
+     * 
+     * @param req
+     * @param quizId
+     * @param model
+     * @return 
+     */
+    @RequestMapping(value = "/result", method = RequestMethod.POST, params="action=submit")
+    public String getResults(HttpServletRequest req, 
+                            @RequestParam("QuizId") int quizId, 
+                            @RequestParam("userId") int userId, 
+                            @RequestParam("difficulty") String difficulty,
+                            @RequestParam("category") String category,
+                            ModelMap model) {
+        //Contains client answers
+        Map<String, String[]> parameters = req.getParameterMap();
+        
+        
+        //Fetch questions and alternatives for the played guiz from DB to calculate points
+        QuizDAO dao = new QuizDAO();
+        Quiz quiz = dao.getQuiz(quizId);
+        ArrayList<Question> questions = dao.getQuestionsByQuizId(quizId);
+        questions = dao.getAlternativesByQuestionId(questions);
+     
+
+        
+        //Calc client results
+        int score = 0; 
+        for(int i = 0; i < questions.size(); i++){
+            String[] clientAnswers = parameters.get(String.valueOf(questions.get(i).getQuestionId()));
+            if(clientAnswers != null){ 
+                int temp = questions.get(i).calculatePoints(clientAnswers);
+                if(temp > 0){
+                    score += temp;
+                    questions.get(i).setIsCorrectlyAnswered(true);
+                }
+                dao.storeAnswers(userId, questions.get(i).getQuestionId(), clientAnswers);
+            }
+        }
+        
+        for(int i = 0; i < questions.size(); i++){
+             ArrayList<Alternative> alternatives = questions.get(i).getAlternativesList();
+             ArrayList<String> clientAnswers = dao.getClientAnswers(userId, questions.get(i).getQuestionId());
+             if(clientAnswers.size() > 0){
+                for(int j = 0; j < alternatives.size(); j++){
+                    for(int k = 0; k < clientAnswers.size(); k++){
+                        if(clientAnswers.get(k).equals(alternatives.get(j).getAlternative())){
+                            alternatives.get(j).setChecked(true);
+                        }
+                    }
+                }
+             }
+        }
+       
+        quiz.setQuestions(questions);
+        System.out.println("Score: " + score);
+        
+        User user = new User();
+        user.setId(userId);
+        UserResult result = new UserResult();
+        result.setQuizId(quizId);
+        result.setScore(score);
+        UserDAO userdao = new UserDAO();
+        result = userdao.updateUserResults(user, result);
+        
+        model.addAttribute("quiz", quiz);
+        model.addAttribute("userId", userId);
+        model.addAttribute("score", score);
+        model.addAttribute("difficulty", difficulty);
+        model.addAttribute("category", category);
+        return "result.html";
+    }
+    
     
     
 }
