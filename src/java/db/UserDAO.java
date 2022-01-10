@@ -12,8 +12,6 @@ import beans.UserResults;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Class User Data Access Object (UserDAO).
@@ -299,7 +297,6 @@ public class UserDAO {
         getUserResultByUserAndQuizIdStmt = db.getCon().prepareStatement("SELECT q.category, q.difficulty, q.id,r.score, r.user_id FROM quizzes AS q INNER JOIN results AS r WHERE q.id = ? AND r.user_id = ?");
         getUserByIdStmt = db.getCon().prepareCall("SELECT * FROM users WHERE id = ?");
         getUserResults = db.getCon().prepareCall("SELECT score, quiz_id, category, difficulty FROM results INNER JOIN quizzes WHERE user_id = ? AND quiz_id = quizzes.id;");
-    }    
-
+    }   
    
 }
