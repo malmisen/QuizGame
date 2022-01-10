@@ -242,16 +242,17 @@ public class UserDAO {
     public UserResults getUserResults(User user) {
         ResultSet resultSet = null;
         UserResults results = new UserResults();
-        UserResult result = null;
+  
         try {
             getUserResults.setInt(1, user.getId());
+            System.out.println("The user id: " + user.getId());
             resultSet = getUserResults.executeQuery();
             int count = 0;
             while (resultSet.next()) {
-                result = new UserResult();
-                result.setScore(resultSet.getInt(RESULTS_COLUMN_SCORE_NAME));
-                result.setCategory(resultSet.getString(QUIZZES_COLUMN_CATEGORY_NAME));
-                result.setDifficulty(resultSet.getString(QUIZZES_COLUMN_DIFFICULTY_NAME));
+                UserResult result = new UserResult();
+                result.setScore(resultSet.getInt("score"));
+                result.setCategory(resultSet.getString("category"));
+                result.setDifficulty(resultSet.getString("difficulty"));
                 results.addResults(result);
                 count++;
             }
@@ -296,7 +297,7 @@ public class UserDAO {
         getUserTotalScoreStatement = db.getCon().prepareStatement("SELECT user_id, sum(score), username FROM results INNER JOIN users ON results.user_id=users.id GROUP BY user_id");
         getUserResultByUserAndQuizIdStmt = db.getCon().prepareStatement("SELECT q.category, q.difficulty, q.id,r.score, r.user_id FROM quizzes AS q INNER JOIN results AS r WHERE q.id = ? AND r.user_id = ?");
         getUserByIdStmt = db.getCon().prepareCall("SELECT * FROM users WHERE id = ?");
-        getUserResults = db.getCon().prepareCall("SELECT score, quiz_id, category, difficulty FROM results INNER JOIN quizzes WHERE user_id = ? AND quiz_id = quizzes.id;");
+        getUserResults = db.getCon().prepareCall("SELECT r.score, r.quiz_id, q.category, q.difficulty FROM results AS r INNER JOIN quizzes AS q WHERE r.user_id = ? AND r.quiz_id = q.id");
     }   
    
 }

@@ -151,6 +151,7 @@ public class GameController {
 
         UserDAO userDAO = new UserDAO();
         User dbUser = userDAO.getUserById(userId);
+        
 
         model.addAttribute("username", dbUser.getUsername());
         return "redirect:http://localhost:8080/QuizGame/home";
@@ -198,6 +199,8 @@ public class GameController {
                 dao.storeAnswers(userId, questions.get(i).getQuestionId(), clientAnswers);
             }
         }
+        
+        //Find already answered questions and which alternatives have been checked
         for(int i = 0; i < questions.size(); i++){
              ArrayList<Alternative> alternatives = questions.get(i).getAlternativesList();
              ArrayList<String> clientAnswers = dao.getClientAnswers(userId, questions.get(i).getQuestionId());
