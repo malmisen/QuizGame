@@ -37,7 +37,7 @@ public class QuizDAO {
     PreparedStatement createNewOnGoingQuizStmt;
     PreparedStatement selectOnGoingQuizzesByUserIdStmt;
     PreparedStatement fetchClientAnswersStmt;
-    PreparedStatement  fetchOnGoingQuizByQuizIdStmt;
+    PreparedStatement fetchOnGoingQuizByQuizIdStmt;
     PreparedStatement updateScoreWithQuizIdStmt;
     //Db connection handler
     private DBHandler db;

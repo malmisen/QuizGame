@@ -165,7 +165,7 @@ INSERT INTO alternative (text, question_id, quiz_id) VALUES ("Ugly", 3, 1);
 
 
 CREATE TABLE IF NOT EXISTS questions(
-	id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     text VARCHAR(255) NOT NULL,
     quiz_id INT NOT NULL,
     FOREIGN KEY (quiz_id) REFERENCES quizzes(id)
@@ -205,7 +205,7 @@ SELECT * FROM alternative;
 SELECT * FROM quizzes WHERE id = 1;
 
 CREATE TABLE IF NOT EXISTS clientAnswers(
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     text VARCHAR(255) NOT NULL,
     user_id INT NOT NULL,
     question_id INT NOT NULL,
