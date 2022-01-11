@@ -26,34 +26,6 @@ public class WelcomeController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String start(ModelMap model) { //method name is not mapped
-        
-        /* MOVE BACK TO HOMEPAGECONTROLLER */
-        /*
-        beans.User user = new beans.User();
-        UserDAO dao = new UserDAO();
-        beans.Leaderboard result = new beans.Leaderboard();
-        
-        user.setUsername("stevie");                          //change back to username
-        beans.User dbUser = dao.getUserByUsername("stevie"); //change back to username
-        model.addAttribute("user", dbUser);
-        
-        String[] categories = {"Linux", "DevOps", "Docker", "Networking", "Programming"};
-        model.addAttribute("categories", categories);
-        
-        String[] difficulties = {"Easy", "Medium", "Hard"};
-        model.addAttribute("difficulties", difficulties);
-        
-        model.addAttribute("id", user.getId());
-        
-        UserResults results = dao.getUserResults(dbUser);
-        model.addAttribute("results", results.getResults());
-        
-        Leaderboard leaderboard = dao.getTotalScore(); 
-        model.addAttribute("leaderboard", leaderboard.getLeaderboard());
-        */
-        
-        /* MOVE BACK TO HOMEPAGECONTROLLER */
-
         return "index"; // CHANGE BACK TO INDEX
     }
 
@@ -70,33 +42,11 @@ public class WelcomeController {
         dbUser = dao.getUserByUsername(username);
 
         if (dbUser.getUsername().equals(user.getUsername())&&(dbUser.getPassword().equals(user.getPassword()))) {
-            /*
-            model.addAttribute("user", dbUser);
-            model.addAttribute("id", dbUser.getId());
-            
-            String[] categories = {"Linux", "DevOps", "Docker", "Networking", "Programming"};
-            model.addAttribute("categories", categories);
-        
-            String[] difficulties = {"Easy", "Medium", "Hard"};
-            model.addAttribute("difficulties", difficulties);
-            
-            UserResults results = dao.getUserResults(dbUser);
-            model.addAttribute("results", results.getResults());
-            
-            QuizDAO quizDAO = new QuizDAO();
-            ArrayList<Quiz> onGoingQuizzes = quizDAO.getOnGoingQuizzes(dbUser.getId());
-            model.addAttribute("onGoingQuizzes", onGoingQuizzes);
-            */
-            
-         
-            
             
             model.addAttribute("username", dbUser.getUsername());
-            
-            
+           
             return "redirect:http://localhost:8080/QuizGame/home";
           
-            //return "homepage.html";
         } else {
             return "index.html";
         }
