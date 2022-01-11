@@ -236,8 +236,7 @@ public class UserDAO {
         }
         
         return results;
-        }
-    
+    }    
     
     public UserResults getUserResults(User user) {
         ResultSet resultSet = null;

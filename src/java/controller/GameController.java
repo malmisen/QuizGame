@@ -176,15 +176,12 @@ public class GameController {
                             ModelMap model) {
         //Contains client answers
         Map<String, String[]> parameters = req.getParameterMap();
-        
-        
+                
         //Fetch questions and alternatives for the played guiz from DB to calculate points
         QuizDAO dao = new QuizDAO();
         Quiz quiz = dao.getQuiz(quizId);
         ArrayList<Question> questions = dao.getQuestionsByQuizId(quizId);
-        questions = dao.getAlternativesByQuestionId(questions);
-     
-
+        questions = dao.getAlternativesByQuestionId(questions);     
         
         //Calc client results
         int score = 0; 

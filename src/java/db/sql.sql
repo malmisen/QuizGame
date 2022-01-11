@@ -17,116 +17,11 @@ USE test;
 
 DROP TABLE results;
 DROP TABLE alternative;
-DROP TABLE questions;
-DROP TABLE users;
-DROP TABLE quizzes;
-
-CREATE TABLE IF NOT EXISTS users(
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        firstName VARCHAR(32) NOT NULL,
-        lastName  VARCHAR(32) NOT NULL,
-        email	  VARCHAR(32) UNIQUE NOT NULL,
-        username  VARCHAR(32) UNIQUE NOT NULL,
-	password  VARCHAR(32) NOT NULL
-);
-
-INSERT INTO users (firstName, lastName, email, username, password) VALUES ('Steve', 'Stevenson', 'example@example.com', 'stevie', md5('password'));
-
-SELECT * FROM users WHERE username = 'stevie';
-
-SELECT * FROM users;
-
-CREATE TABLE IF NOT EXISTS alternative(
-	id INT AUTO_INCREMENT PRIMARY KEY,
-        text VARCHAR(255) NOT NULL,
-        question_id INT NOT NULL,
-        quiz_id INT NOT NULL,
-        FOREIGN KEY (question_id) REFERENCES questions(id),
-        FOREIGN KEY (quiz_id) REFERENCES quizzes(id)
-);
-
-INSERT INTO alternative (text, question_id, quiz_id) VALUES ("Linux", 1, 1);
-INSERT INTO alternative (text, question_id, quiz_id) VALUES ("Windows", 1, 1);
-INSERT INTO alternative (text, question_id, quiz_id) VALUES ("MacOS", 1, 1);
-INSERT INTO alternative (text, question_id, quiz_id) VALUES ("3", 2, 1);
-INSERT INTO alternative (text, question_id, quiz_id) VALUES ("10", 2, 1);
-INSERT INTO alternative (text, question_id, quiz_id) VALUES ("24", 2, 1);
-INSERT INTO alternative (text, question_id, quiz_id) VALUES ("Good", 3, 1);
-INSERT INTO alternative (text, question_id, quiz_id) VALUES ("Bad", 3, 1);
-INSERT INTO alternative (text, question_id, quiz_id) VALUES ("Ugly", 3, 1);
-
-CREATE TABLE IF NOT EXISTS questions(
-	id      INT AUTO_INCREMENT PRIMARY KEY,
-        text    VARCHAR(255) NOT NULL,
-        quiz_id INT NOT NULL,
-        FOREIGN KEY (quiz_id) REFERENCES quizzes(id)
-);
-
-INSERT INTO questions (text, quiz_id) VALUES ("What is my name?", 1);
-INSERT INTO questions (text, quiz_id) VALUES ("How old am I?", 1);
-INSERT INTO questions (text, quiz_id) VALUES ("How do you do?", 1);
-
-SELECT * FROM questions;
-
-CREATE TABLE IF NOT EXISTS quizzes(
-	id          INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	category    VARCHAR(32) NOT NULL,
-        difficulty  VARCHAR(32) NOT NULL
-);
-
-INSERT INTO quizzes (category, difficulty) VALUES ("linux", "easy");
-SELECT * FROM quizzes;
-
-CREATE TABLE IF NOT EXISTS results(
-	id          INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	score       INT NOT NULL,
-        user_id     INT NOT NULL,
-        quiz_id     INT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(id),
-        FOREIGN KEY (quiz_id) REFERENCES quizzes(id)
-);
-
-SELECT q.text FROM questions AS q WHERE q.quiz_id = 1;
-SELECT a.text FROM alternative AS a where a.quiz_id = 1 AND a.question_id = 1;
-
-CREATE TABLE IF NOT EXISTS leaderboard(
-	id              INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	totalScore	INT NOT NULL,
-        user_id         INT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
-CREATE TABLE IF NOT EXISTS clientAnswers(
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    text VARCHAR(255) NOT NULL,
-    user_id INT NOT NULL,
-    question_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (question_id) REFERENCES questions(id)
-);
-
-CREATE TABLE IF NOT EXISTS onGoingQuizzes(
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        user_id INT NOT NULL,
-        quiz_id INT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(id),
-        FOREIGN KEY (quiz_id) REFERENCES quizzes(id)
-);
-
-
-/* NEW SQL  */
-CREATE SCHEMA test;
-USE test;
-
-DROP TABLE results;
-DROP TABLE alternative;
 DROP TABLE clientAnswers;
 DROP TABLE onGoingQuizzes;
 DROP TABLE questions;
 DROP TABLE users;
 DROP TABLE quizzes;
-
-
 
 CREATE TABLE IF NOT EXISTS users(
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -178,8 +73,8 @@ INSERT INTO questions (text, quiz_id) VALUES ("How do you do?", 1);
 SELECT * FROM questions;
 
 CREATE TABLE IF NOT EXISTS quizzes(
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	category VARCHAR(32) NOT NULL,
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    category VARCHAR(32) NOT NULL,
     difficulty VARCHAR(32) NOT NULL
 );
 
@@ -214,7 +109,7 @@ CREATE TABLE IF NOT EXISTS clientAnswers(
 );
 
 CREATE TABLE IF NOT EXISTS onGoingQuizzes(
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     quiz_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
